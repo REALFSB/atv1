@@ -14,3 +14,6 @@ Por meio do painel, é possível acompanhar o desempenho dos operadores de forma
 1. python3 -m venv .venv
 2. source .venv/bin/activate
 3. pip install -r requirements.txt
+
+
+https://www.kaggle.com/datasets/mexwell/employee-performance-and-productivity-data
