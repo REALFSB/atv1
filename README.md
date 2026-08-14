@@ -1,8 +1,9 @@
-# PROJETO E GESTÃO DE DADOS (CCD610)  
+# PAINEL DE MONITORIAMENTO DE PRODUTIVIDADE
  
 ## Descrição
-Breve resumo do problema de dados que
-o projeto pretende resolver.
+Este projeto tem como objetivo monitorar, analisar e acompanhar a produtividade dos operadores, utilizando processos de ETL (Extração, Transformação e Carga) para consolidar dados operacionais e transformá-los em indicadores de desempenho.
+
+Por meio do painel, é possível acompanhar o desempenho dos operadores de forma individual e por equipe, identificar tendências, comparar resultados e detectar possíveis desvios de produtividade.
  
 ## Integrantes
 - Akira
