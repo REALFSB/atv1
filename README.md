@@ -9,6 +9,7 @@ Por meio do painel, é possível acompanhar o desempenho dos operadores de forma
 - Akira
 - Elizabeth
 - Fernando Batista
+- Matheus Cruz
  
 ## Como executar
 1. python3 -m venv .venv
