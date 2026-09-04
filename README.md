@@ -1,5 +1,8 @@
 # Plataforma de Monitoramento e Gestão de Performance Operacional
 
+**Disciplina:** CCD610 - Projeto e Gestão de Dados
+**Professor:** Victor Perrone de Lima Varela
+**Equipe:** Akira Higa, Elizabeth Kremer Kruger, Fernando de Souza Batista, Matheus Cruz 
 
 ## Problema
 
@@ -90,3 +93,12 @@ Poderá acompanhar
 ### Operador/funcionário
 
 &#x09;Poderá consultar seus próprios indicadores, dependendo das regras de acesso definidas.
+
+## Governança de Dados
+
+- **Origem:** todos os datasets utilizados são públicos, obtidos na plataforma Kaggle (conforme recomendação do professor).
+- **Licenciamento:** cada dataset utilizado terá sua licença Kaggle documentada (ex: CC0, ODbL) antes do uso.
+- **Rastreabilidade:** manteremos um registro (dataset, versão, data de download, link) de cada fonte incorporada ao pipeline.
+- **Qualidade:** dados serão validados no ETL (duplicidade, nulos, tipos inválidos) antes de entrar na estrutura analítica.
+- **Dados sensíveis:** mesmo sendo dados públicos/sintéticos, campos como salário serão tratados com cuidado na exibição (ex: agregação por faixa, não valor individual), simulando boas práticas de privacidade.
+- **Controle de acesso:** os três perfis de usuário (Gestor, Administrador de dados, Operador) terão visibilidade de dados diferente, conforme definido no público-alvo.
