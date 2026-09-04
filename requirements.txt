@@ -1,6 +1,14 @@
-pandas==2.2.2
-sqlalchemy==2.0.52
-scikit-learn==1.9.0
-numpy==1.26.4
-matplotlib==3.9.0
-pytest==8.2.0
+# Dependências Python do projeto
+# Plataforma de Monitoramento e Gestão de Performance Operacional
+# CCD610 - Projeto e Gestão de Dados
+
+pandas
+psycopg2-binary
+sqlalchemy
+pytest
+
+# ---
+# Ferramentas externas utilizadas no projeto (não instaladas via pip):
+# - PostgreSQL: banco de dados relacional (Data Warehouse)
+# - Power BI / Metabase: visualização e dashboards
+# - Git / GitHub: versionamento de código
