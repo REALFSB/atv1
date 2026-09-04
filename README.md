@@ -1,7 +1,9 @@
 # Plataforma de Monitoramento e Gestão de Performance Operacional
 
 **Disciplina:** CCD610 - Projeto e Gestão de Dados
+
 **Professor:** Victor Perrone de Lima Varela
+
 **Equipe:** Akira Higa, Elizabeth Kremer Kruger, Fernando de Souza Batista, Matheus Cruz 
 
 ## Problema
