@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack - Gestão de Metas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="dashboard-data.js"></script>
+  <script src="datatrack.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+  <div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex-col justify-between shrink-0 hidden md:flex border-r border-slate-800"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <div>
+          <h1 class="text-lg font-semibold text-slate-900">Gestão Estratégica & Metas Operacionais</h1>
+          <p class="text-xs text-slate-500" id="subtitulo">Metas e atingimento por departamento</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div id="fonte-tabs" class="hidden lg:flex items-center bg-slate-100 rounded-lg p-1 text-xs font-medium text-slate-600"></div>
+          <button onclick="toggleModal(true)" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Nova Meta
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 space-y-6">
+        <div class="lg:hidden"><div id="fonte-tabs-mobile" class="flex flex-wrap items-center bg-slate-100 rounded-lg p-1 text-xs font-medium text-slate-600"></div></div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2"><span class="text-xs font-medium uppercase tracking-wider">Atingimento Global</span>
+              <span class="p-1.5 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="gauge" class="w-4 h-4"></i></span></div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-glob">–</span><span class="text-xs font-semibold" id="k-glob-d"></span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-glob-sub"></p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2"><span class="text-xs font-medium uppercase tracking-wider">Metas Atingidas</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="check-circle-2" class="w-4 h-4"></i></span></div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-ok">–</span><span class="text-xs font-semibold text-emerald-600" id="k-ok-d"></span></div>
+            <p class="text-xs text-slate-400 mt-1">Metas com atingimento ≥ 95%</p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2"><span class="text-xs font-medium uppercase tracking-wider">Metas sob Risco</span>
+              <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span></div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-risco">–</span><span class="text-xs font-medium text-rose-600" id="k-risco-d"></span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-risco-sub"></p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2"><span class="text-xs font-medium uppercase tracking-wider">Completude dos Dados</span>
+              <span class="p-1.5 rounded-lg bg-purple-50 text-purple-600"><i data-lucide="award" class="w-4 h-4"></i></span></div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-comp">–</span><span class="text-xs font-semibold text-purple-600">Meta: ≥ 95%</span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-comp-sub"></p>
+          </div>
+        </div>
+
+        <!-- Gráficos -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-900">Meta Estabelecida vs. Realizado</h2>
+                <p class="text-xs text-slate-400" id="chart-sub"></p>
+              </div>
+              <select id="sel-ind" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none"></select>
+            </div>
+            <div class="h-64"><canvas id="targetsComparisonChart"></canvas></div>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900 mb-1">Distribuição das Metas</h2>
+              <p class="text-xs text-slate-400 mb-4">Classificação por saúde do indicador</p>
+              <div class="h-48 flex items-center justify-center"><canvas id="statusDoughnutChart"></canvas></div>
+            </div>
+            <div class="pt-4 border-t border-slate-100 grid grid-cols-4 text-center text-xs">
+              <div><span class="font-bold text-emerald-600" id="d-superada">0</span><p class="text-slate-400">Superadas</p></div>
+              <div><span class="font-bold text-blue-600" id="d-na_meta">0</span><p class="text-slate-400">Na meta</p></div>
+              <div><span class="font-bold text-amber-600" id="d-atencao">0</span><p class="text-slate-400">Atenção</p></div>
+              <div><span class="font-bold text-rose-600" id="d-critica">0</span><p class="text-slate-400">Críticas</p></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Matriz de Indicadores & Objetivos</h2>
+              <p class="text-xs text-slate-400">Realizado calculado das bases · ordenado do pior para o melhor atingimento</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+                <input id="busca" type="text" placeholder="Filtrar meta..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-44" />
+              </div>
+              <select id="sel-dep" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none"></select>
+              <button id="btn-export" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg border border-slate-200">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> CSV</button>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">Meta / Indicador</th>
+                  <th class="px-4 py-3">Departamento</th>
+                  <th class="px-4 py-3">Alvo (Target)</th>
+                  <th class="px-4 py-3">Realizado</th>
+                  <th class="px-5 py-3 w-48">Progresso</th>
+                  <th class="px-4 py-3">Prazo</th>
+                  <th class="px-4 py-3 text-center">Status</th>
+                  <th class="px-4 py-3 text-center">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="linhas" class="divide-y divide-slate-100 text-slate-700"></tbody>
+            </table>
+          </div>
+          <div class="p-4 border-t border-slate-100 bg-slate-50 text-xs text-slate-500" id="rodape"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: NOVA META -->
+  <div id="newGoalModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-semibold text-slate-900">Cadastrar Nova Meta</h3>
+        <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-meta" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Indicador</label>
+          <select id="f-ind" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Departamento</label>
+            <select id="f-dep" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"></select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Alvo (Target) <span id="f-un" class="text-slate-400"></span></label>
+            <input id="f-alvo" type="number" step="0.01" min="0.01" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          </div>
+        </div>
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Data limite (opcional)</label>
+          <input id="f-prazo" type="date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+        </div>
+        <p class="text-slate-400">O realizado é calculado automaticamente a partir das bases; só o alvo é definido por você. A meta fica salva neste navegador.</p>
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="toggleModal(false)" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm">Salvar Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const { D, nf, pf, mean, aggregate, rowsOf, departments, metaDef, attainment, statusOf, badge, metaRows } = DT;
+    DT.sidebar('metas.html');
+    const $ = (id) => document.getElementById(id);
+    const KEY = 'datatrack.metas.custom';
+    let current = 'all', custom = [], chartCmp, chartDon;
+    try { custom = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (e) { custom = []; }
+    const salvar = () => { try { localStorage.setItem(KEY, JSON.stringify(custom)); } catch (e) { /* ignora */ } };
+    const fmtV = (def, v) => nf(v, def.casas) + ' ' + def.unidade;
+    const alvoTxt = (def) => (def.sentido === 'min' ? '≤ ' : '≥ ') + fmtV(def, def.alvo);
+
+    function toggleModal(show) { $('newGoalModal').classList.toggle('hidden', !show); }
+
+    /* catálogo + metas personalizadas, já com realizado e status */
+    function todasAsMetas() {
+      const base = metaRows(current).map((r) => Object.assign({}, r, { custom: null, prazo: null }));
+      const extra = custom.map((c, i) => {
+        const def = Object.assign({}, metaDef(c.id), { alvo: c.alvo });
+        const dep = departments(current).find((d) => d.department === c.dep);
+        if (!dep) return null;
+        const v = mean(dep, c.id), pct = attainment(def, v);
+        if (pct === null) return null;
+        return { def, dep: c.dep, n: dep.n, sources: dep.sources, valor: v, pct, status: statusOf(pct), custom: i, prazo: c.prazo || null };
+      }).filter(Boolean);
+      return base.concat(extra);
+    }
+
+    function render(source) {
+      if (source) current = source;
+      const metas = todasAsMetas(), tot = aggregate(rowsOf(current));
+      $('subtitulo').textContent = DT.sourceNote(current) + ' · gerado em ' + DT.generatedAt();
+
+      const media = metas.reduce((s, m) => s + m.pct, 0) / metas.length, stg = statusOf(media);
+      $('k-glob').textContent = pf(media, 1); $('k-glob-d').textContent = stg.label; $('k-glob-d').className = 'text-xs font-semibold ' + stg.txt;
+      $('k-glob-sub').textContent = 'Média de ' + metas.length + ' metas (' + D.params.metas.length + ' indicadores × departamentos)';
+
+      const cont = { superada: 0, na_meta: 0, atencao: 0, critica: 0 };
+      metas.forEach((m) => { cont[m.status.key]++; });
+      const ok = cont.superada + cont.na_meta, risco = cont.atencao + cont.critica;
+      $('k-ok').textContent = ok + ' / ' + metas.length; $('k-ok-d').textContent = pf(ok / metas.length * 100, 1);
+      $('k-risco').textContent = risco; $('k-risco-d').textContent = cont.critica + ' críticas';
+      const pior = metas.slice().sort((a, b) => a.pct - b.pct)[0];
+      $('k-risco-sub').textContent = pior ? 'Pior: ' + pior.def.nome + ' em ' + pior.dep + ' (' + pf(pior.pct, 0) + ')' : '';
+      const comp = D.quality.completude_pct, c = $('k-comp');
+      c.textContent = pf(comp, 1);
+      $('k-comp-sub').textContent = nf(D.quality.linhas) + ' registros · nulos por coluna ≤ 5% (US3)';
+
+      Object.keys(cont).forEach((k) => { $('d-' + k).textContent = cont[k]; });
+      if (chartDon) chartDon.destroy();
+      chartDon = new Chart($('statusDoughnutChart').getContext('2d'), {
+        type: 'doughnut',
+        data: { labels: ['Superadas', 'Na meta', 'Atenção', 'Críticas'], datasets: [{ data: [cont.superada, cont.na_meta, cont.atencao, cont.critica], backgroundColor: ['#10b981', '#3b82f6', '#f59e0b', '#ef4444'], borderWidth: 0 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, cutout: '72%' },
+      });
+
+      renderComparativo(); renderTabela(); lucide.createIcons();
+    }
+
+    function renderComparativo() {
+      const id = $('sel-ind').value, def = metaDef(id);
+      const deps = departments(current).filter((d) => mean(d, id) !== null).sort((a, b) => mean(b, id) - mean(a, id));
+      $('chart-sub').textContent = def.nome + ' · ' + (def.sentido === 'min' ? 'quanto menor, melhor' : 'quanto maior, melhor') + ' · alvo ' + alvoTxt(def);
+      if (chartCmp) chartCmp.destroy();
+      chartCmp = new Chart($('targetsComparisonChart').getContext('2d'), {
+        type: 'bar',
+        data: { labels: deps.map((d) => d.department), datasets: [
+          { label: 'Alvo planejado', data: deps.map(() => def.alvo), backgroundColor: '#cbd5e1', borderRadius: 6 },
+          { label: 'Realizado (' + def.unidade + ')', data: deps.map((d) => +mean(d, id).toFixed(2)), backgroundColor: '#2563eb', borderRadius: 6 }] },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } },
+          scales: { y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } }, x: { grid: { display: false }, ticks: { font: { size: 10 }, maxRotation: 60 } } } },
+      });
+    }
+
+    function filtradas() {
+      const q = $('busca').value.trim().toLowerCase(), dep = $('sel-dep').value;
+      return todasAsMetas().filter((m) => (!dep || m.dep === dep) && (!q || (m.def.nome + ' ' + m.dep + ' ' + m.def.detalhe).toLowerCase().includes(q))).sort((a, b) => a.pct - b.pct);
+    }
+
+    function renderTabela() {
+      const lista = filtradas();
+      $('linhas').innerHTML = lista.map((m) => {
+        const st = m.status, prazoTxt = m.prazo ? new Date(m.prazo + 'T00:00').toLocaleDateString('pt-BR') : '–';
+        return '<tr class="hover:bg-slate-50"><td class="px-5 py-3.5"><p class="font-medium text-slate-900">' + m.def.nome + (m.custom !== null ? ' <span class="text-[10px] font-semibold text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">personalizada</span>' : '') +
+          '</p><p class="text-[11px] text-slate-400">' + m.def.detalhe + '</p></td>' +
+          '<td class="px-4 py-3.5"><p class="font-medium text-slate-800">' + m.dep + '</p><p class="text-[11px] text-slate-400">' + nf(m.n) + ' registros' + (m.n < 30 ? ' · amostra pequena' : '') + '</p></td>' +
+          '<td class="px-4 py-3.5 font-semibold text-slate-800">' + alvoTxt(m.def) + '</td>' +
+          '<td class="px-4 py-3.5 font-bold ' + st.txt + '">' + fmtV(m.def, m.valor) + '</td>' +
+          '<td class="px-5 py-3.5"><div class="flex items-center gap-2"><div class="flex-1 bg-slate-100 rounded-full h-2"><div class="' + st.bar + ' h-2 rounded-full" style="width:' + Math.min(100, m.pct) + '%"></div></div>' +
+          '<span class="font-bold ' + st.txt + '">' + nf(m.pct, 0) + '%</span></div></td>' +
+          '<td class="px-4 py-3.5 text-slate-500">' + prazoTxt + '</td>' +
+          '<td class="px-4 py-3.5 text-center">' + badge(st) + '</td>' +
+          '<td class="px-4 py-3.5 text-center">' + (m.custom !== null ? '<button data-rm="' + m.custom + '" class="text-slate-400 hover:text-rose-600 p-1" title="Remover meta"><i data-lucide="trash-2" class="w-4 h-4"></i></button>' : '<span class="text-slate-300">–</span>') + '</td></tr>';
+      }).join('');
+      $('linhas').querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => { custom.splice(+b.dataset.rm, 1); salvar(); render(); }));
+      $('rodape').textContent = lista.length + ' metas · progresso = realizado ÷ alvo (ou alvo ÷ realizado nos indicadores "quanto menor, melhor"). Status: ≥' + D.params.faixas.superada + '% superada · ≥' + D.params.faixas.na_meta + '% na meta · ≥' + D.params.faixas.atencao + '% atenção · abaixo disso crítica.';
+      lucide.createIcons();
+    }
+
+    function popularFiltros() {
+      const inds = D.params.metas.map((m) => '<option value="' + m.id + '">' + m.nome + '</option>').join('');
+      $('sel-ind').innerHTML = inds; $('f-ind').innerHTML = inds;
+      const deps = departments('all').map((d) => d.department).sort();
+      $('sel-dep').innerHTML = '<option value="">Todos os Departamentos</option>' + deps.map((d) => '<option>' + d + '</option>').join('');
+      $('f-dep').innerHTML = deps.map((d) => '<option>' + d + '</option>').join('');
+      const sync = () => { const d = metaDef($('f-ind').value); $('f-alvo').value = d.alvo; $('f-un').textContent = '(' + d.unidade + ')'; };
+      $('f-ind').addEventListener('change', sync); sync();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      popularFiltros();
+      DT.sourceTabs($('fonte-tabs'), render); DT.sourceTabs($('fonte-tabs-mobile'), render);
+      $('sel-ind').addEventListener('change', renderComparativo);
+      $('busca').addEventListener('input', renderTabela); $('sel-dep').addEventListener('change', renderTabela);
+      $('form-meta').addEventListener('submit', (e) => {
+        e.preventDefault();
+        custom.push({ id: $('f-ind').value, dep: $('f-dep').value, alvo: parseFloat($('f-alvo').value), prazo: $('f-prazo').value || null });
+        salvar(); toggleModal(false); render();
+      });
+      $('btn-export').addEventListener('click', () => DT.csv('metas_' + current + '.csv', ['indicador', 'departamento', 'alvo', 'realizado', 'atingimento_pct', 'status'],
+        filtradas().map((m) => [m.def.nome, m.dep, m.def.alvo, m.valor.toFixed(2), m.pct.toFixed(1), m.status.label])));
+      render('all');
+    });
+  </script>
+</body>
+</html>

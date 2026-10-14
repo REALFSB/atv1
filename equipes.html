@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack - Equipes & Escalas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="dashboard-data.js"></script>
+  <script src="datatrack.js"></script>
+  <!-- Saída do modelo (gerada por: python -m src.serve) -->
+  <script src="risco-data.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+  <div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex-col justify-between shrink-0 hidden md:flex border-r border-slate-800"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <div>
+          <h1 class="text-lg font-semibold text-slate-900">Gestão de Equipes & Escalas Operacionais</h1>
+          <p class="text-xs text-slate-500" id="subtitulo">Capacidade, carga de trabalho e absenteísmo por departamento</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <div id="fonte-tabs" class="hidden lg:flex items-center bg-slate-100 rounded-lg p-1 text-xs font-medium text-slate-600"></div>
+          <button id="btn-export" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+            <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar equipes
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 space-y-6">
+        <div class="lg:hidden"><div id="fonte-tabs-mobile" class="flex flex-wrap items-center bg-slate-100 rounded-lg p-1 text-xs font-medium text-slate-600"></div></div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Retenção</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="check-check" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-ret">–</span><span class="text-xs font-semibold text-emerald-600" id="k-ret-d"></span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-ret-sub"></p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Absenteísmo Elevado</span>
+              <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="user-x" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-abs">–</span><span class="text-xs font-medium text-slate-500" id="k-abs-d"></span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-abs-sub"></p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Trabalho Remoto</span>
+              <span class="p-1.5 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="home" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-rem">–</span><span class="text-xs font-medium text-slate-500">dos dias</span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-rem-sub"></p>
+          </div>
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Horas Extras (média)</span>
+              <span class="p-1.5 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="alert-circle" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2"><span class="text-2xl font-bold text-slate-900" id="k-ot">–</span><span class="text-xs font-semibold" id="k-ot-d"></span></div>
+            <p class="text-xs text-slate-400 mt-1" id="k-ot-sub"></p>
+          </div>
+        </div>
+
+        <!-- Cards dos departamentos -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-slate-900">Status dos Departamentos</h2>
+            <span class="text-xs text-slate-500" id="cards-count"></span>
+          </div>
+          <div id="cards" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5"></div>
+        </div>
+
+        <!-- Radar de Risco de Ausência (saída do modelo: src/serve.py -> risco-data.js) -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="radar-risco">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <i data-lucide="radar" class="w-4 h-4 text-blue-600"></i> Radar de Risco de Ausência
+                <span id="risco-origem" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500"></span>
+              </h2>
+              <p class="text-xs text-slate-400">Funcionários ordenados por probabilidade de absenteísmo elevado (≥ 11 dias/ano) · IDs pseudonimizados</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <select id="risco-setor" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option value="">Todos os Departamentos</option>
+              </select>
+              <button id="risco-export" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar CSV
+              </button>
+            </div>
+          </div>
+          <div id="risco-aviso" class="hidden px-5 py-3 text-xs bg-red-50 text-red-700 border-b border-red-200 flex items-start gap-2"><i data-lucide="alert-triangle" class="w-4 h-4 shrink-0"></i><span id="risco-aviso-txt"></span></div>
+          <div id="risco-vazio" class="hidden p-5 text-xs text-slate-500">Sem dados de risco. Rode <code>python -m src.train</code> e <code>python -m src.serve</code> para gerar o arquivo <code>risco-data.js</code>.</div>
+          <div id="risco-corpo">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-100 border-b border-slate-100 text-xs">
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Alto</p><p id="risco-alta" class="text-xl font-bold text-red-600">-</p></div>
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Médio</p><p id="risco-media" class="text-xl font-bold text-amber-600">-</p></div>
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Baixo</p><p id="risco-baixa" class="text-xl font-bold text-emerald-600">-</p></div>
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Qualidade do modelo</p><p id="risco-modelo" class="text-sm font-semibold text-slate-700 mt-1.5">-</p></div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                  <tr>
+                    <th class="px-5 py-3">#</th>
+                    <th class="px-5 py-3">Operador (ID)</th>
+                    <th class="px-5 py-3">Departamento / Cargo</th>
+                    <th class="px-5 py-3">Risco</th>
+                    <th class="px-5 py-3">Faixa</th>
+                    <th class="px-5 py-3">Principais fatores</th>
+                  </tr>
+                </thead>
+                <tbody id="risco-linhas" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-slate-50 text-xs text-slate-500" id="risco-rodape"></div>
+          </div>
+        </div>
+
+        <!-- Carga de trabalho por departamento -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Quadro de Carga de Trabalho por Departamento</h2>
+              <p class="text-xs text-slate-400">Médias calculadas direto das bases · clique no cabeçalho para ordenar</p>
+            </div>
+            <div class="relative">
+              <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+              <input id="busca" type="text" placeholder="Filtrar departamento..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-52" />
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                <tr id="cab-carga"></tr>
+              </thead>
+              <tbody id="linhas-carga" class="divide-y divide-slate-100 text-slate-700"></tbody>
+            </table>
+          </div>
+          <div class="p-4 border-t border-slate-100 bg-slate-50 text-xs text-slate-500" id="carga-rodape"></div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // Radar de Risco de Ausência: lê window.RISCO_DATA (gerado por src/serve.py)
+    (function () {
+      const D = window.RISCO_DATA;
+      const $ = (id) => document.getElementById(id);
+      if (!D || !D.ranking || !D.ranking.length) { $('risco-corpo').classList.add('hidden'); $('risco-vazio').classList.remove('hidden'); $('risco-export').classList.add('hidden'); return; }
+      const FATORES = { tenure_months: 'tempo de casa', monthly_salary: 'salário', weekly_hours: 'carga semanal', overtime_hours: 'horas extras',
+        training_hours: 'horas de treinamento', projects: 'projetos', satisfaction: 'satisfação', performance_score: 'desempenho',
+        remote_pct: '% remoto', team_size: 'tamanho do time', promotions: 'promoções', overtime_ratio: 'proporção de horas extras', low_satisfaction: 'baixa satisfação' };
+      const PREFIXOS = { department_: 'depto ', job_title_: 'cargo ', education_level_: 'escolaridade ' };
+      const nomeFator = (k) => FATORES[k] || Object.keys(PREFIXOS).reduce((t, p) => (k.startsWith(p) ? PREFIXOS[p] + k.slice(p.length) : t), k);
+      const COR = { Alta: 'bg-red-50 text-red-700 border-red-200', 'Média': 'bg-amber-50 text-amber-700 border-amber-200', Baixa: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+      const fmt = (f) => (f || '').split(', ').map(nomeFator).join(' · ');
+      const setores = [...new Set(D.ranking.map((r) => r.department))].sort();
+      setores.forEach((x) => { const o = document.createElement('option'); o.value = x; o.textContent = x; $('risco-setor').appendChild(o); });
+      $('risco-origem').textContent = D.source === 'synthetic' ? 'DADOS SINTÉTICOS (DEMO)' : 'BASE KAGGLE (100 mil funcionários rotulados)';
+      if (!D.meets_targets) { const mm = D.metrics || {}; $('risco-aviso').classList.remove('hidden'); $('risco-aviso-txt').textContent = 'Modelo abaixo da meta (recall ≥ 0,60 e AUC ≥ 0,70): AUC ' + (mm.roc_auc ? mm.roc_auc.toFixed(2) : 'n/d') + '. O ranking não separa quem falta mais e NÃO deve apoiar decisões de escala. Veja docs/05-dados-reais.md.'; }
+      $('risco-alta').textContent = (D.counts.Alta || 0).toLocaleString('pt-BR'); $('risco-media').textContent = (D.counts['Média'] || 0).toLocaleString('pt-BR'); $('risco-baixa').textContent = (D.counts.Baixa || 0).toLocaleString('pt-BR');
+      const m = D.metrics || {};
+      $('risco-modelo').textContent = m.roc_auc ? 'AUC ' + m.roc_auc.toFixed(2) + ' · recall ' + m.recall.toFixed(2) : 'métricas indisponíveis';
+      const filtrar = () => D.ranking.filter((r) => !$('risco-setor').value || r.department === $('risco-setor').value);
+      function render() {
+        const lista = filtrar(), topo = lista.slice(0, 10);
+        $('risco-linhas').innerHTML = topo.map((r) => '<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">' + r.rank + '</td>' +
+          '<td class="px-5 py-3 font-mono text-slate-900">' + r.id + '</td><td class="px-5 py-3">' + r.department + ' · ' + r.job_title + '</td>' +
+          '<td class="px-5 py-3 font-semibold text-slate-900">' + (r.risk * 100).toFixed(0) + '%</td>' +
+          '<td class="px-5 py-3"><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold border ' + COR[r.band] + '">' + r.band + '</span></td>' +
+          '<td class="px-5 py-3">' + fmt(r.factors) + '</td></tr>').join('');
+        $('risco-rodape').textContent = 'Mostrando ' + topo.length + ' de ' + lista.length + ' funcionários (top ' + D.ranking.length + ' de ' + (D.total || D.ranking.length).toLocaleString('pt-BR') + '). A exportação traz o recorte filtrado.';
+      }
+      $('risco-setor').addEventListener('change', render);
+      $('risco-export').addEventListener('click', () => {
+        const linhas = [['rank', 'id', 'departamento', 'cargo', 'risco', 'faixa', 'fatores']].concat(filtrar().map((r) => [r.rank, r.id, r.department, r.job_title, r.risk, r.band, '"' + fmt(r.factors) + '"']));
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob(['\ufeff' + linhas.map((l) => l.join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }));
+        a.download = 'risco_ausencia.csv'; a.click();
+      });
+      render();
+    })();
+  </script>
+
+  <script>
+    const { D, nf, pf, mean, aggregate, rowsOf, departments, metaDef, attainment, statusOf } = DT;
+    DT.sidebar('equipes.html');
+    const $ = (id) => document.getElementById(id);
+    const prodDef = metaDef('prod'), otDef = metaDef('ot');
+    let current = 'all', ordem = { col: 'n', dir: -1 };
+
+    const COLS = [
+      ['department', 'Departamento', (d) => d.department], ['n', 'Funcionários', (d) => d.n],
+      ['hours', 'Horas/sem', (d) => mean(d, 'hours')], ['ot', 'Horas extras', (d) => mean(d, 'ot')],
+      ['proj', 'Projetos', (d) => mean(d, 'proj')], ['train', 'Treino (h)', (d) => mean(d, 'train')],
+      ['remote', '% Remoto', (d) => mean(d, 'remote')], ['sat', 'Satisfação (1–5)', (d) => mean(d, 'sat')],
+      ['sick', 'Afastamento (dias/ano)', (d) => mean(d, 'sick')],
+    ];
+
+    function render(source) {
+      current = source;
+      const tot = aggregate(rowsOf(source)), deps = departments(source);
+      $('subtitulo').textContent = DT.sourceNote(source) + ' · gerado em ' + DT.generatedAt();
+
+      const ativos = tot.n - tot.resigned;
+      $('k-ret').textContent = pf(ativos / tot.n * 100, 1);
+      $('k-ret-d').textContent = tot.resigned ? nf(tot.resigned) + ' desligados' : 'sem campo';
+      $('k-ret-sub').textContent = nf(ativos) + ' ativos de ' + nf(tot.n) + ' registros';
+
+      const sickN = tot.sick[1];
+      $('k-abs').textContent = sickN ? pf(tot.sick_high / sickN * 100, 1) : '–';
+      $('k-abs-d').textContent = sickN ? nf(tot.sick_high) + ' funcionários' : 'sem rótulo';
+      $('k-abs-sub').textContent = sickN ? 'Média de ' + nf(mean(tot, 'sick'), 1) + ' dias/ano · alto = ≥ ' + D.params.limite_absenteismo_dias + ' dias' : 'Esta base não registra afastamentos';
+
+      $('k-rem').textContent = tot.remote[1] ? nf(mean(tot, 'remote'), 1) + '%' : '–';
+      $('k-rem-sub').textContent = tot.remote[1] ? nf(tot.remote[1]) + ' funcionários com registro' : 'Esta base não registra trabalho remoto';
+
+      const otm = mean(tot, 'ot');
+      $('k-ot').textContent = otm === null ? '–' : nf(otm, 1) + 'h';
+      if (otm !== null) {
+        const st = statusOf(attainment(otDef, otm));
+        $('k-ot-d').textContent = 'Meta ≤ ' + nf(otDef.alvo, 0) + 'h · ' + st.label; $('k-ot-d').className = 'text-xs font-semibold ' + st.txt;
+        const top = deps.filter((d) => d.ot[1]).sort((a, b) => mean(b, 'ot') - mean(a, 'ot'))[0];
+        $('k-ot-sub').textContent = 'Maior média: ' + top.department + ' (' + nf(mean(top, 'ot'), 1) + 'h)';
+      } else { $('k-ot-d').textContent = ''; $('k-ot-sub').textContent = 'Esta base não registra horas extras'; }
+
+      // cards
+      const ordenados = deps.slice().sort((a, b) => b.n - a.n);
+      $('cards-count').textContent = ordenados.length + ' departamentos monitorados';
+      $('cards').innerHTML = ordenados.map((d) => {
+        const p = mean(d, 'prod'), pct = attainment(prodDef, p), st = statusOf(pct), at = d.n - d.resigned;
+        const ret = d.n ? at / d.n * 100 : 0;
+        return '<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between"><div>' +
+          '<div class="flex items-center justify-between"><span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">' + d.sources.length + (d.sources.length > 1 ? ' bases' : ' base') + '</span>' +
+          '<span class="w-2.5 h-2.5 rounded-full ' + st.bar + '" title="' + st.label + '"></span></div>' +
+          '<h3 class="font-bold text-slate-900 mt-2">' + d.department + '</h3>' +
+          '<p class="text-xs text-slate-500">' + nf(d.n) + ' funcionários' + (d.n < 30 ? ' · amostra pequena' : '') + '</p>' +
+          '<div class="mt-4 space-y-2"><div class="flex justify-between text-xs"><span class="text-slate-500">Atingimento da meta</span><span class="font-bold ' + st.txt + '">' + pf(pct, 0) + '</span></div>' +
+          '<div class="w-full bg-slate-100 rounded-full h-2"><div class="' + st.bar + ' h-2 rounded-full" style="width:' + Math.min(100, pct) + '%"></div></div></div></div>' +
+          '<div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs"><span class="text-slate-500">Produtividade: <strong class="text-slate-800">' + nf(p, 1) + ' pts</strong></span>' +
+          '<span class="text-slate-500">Retenção: <strong class="text-slate-800">' + (d.resigned || d.sources.includes('extended') ? pf(ret, 0) : 'n/d') + '</strong></span></div></div>';
+      }).join('');
+
+      renderCarga();
+      lucide.createIcons();
+    }
+
+    function renderCarga() {
+      const q = $('busca').value.trim().toLowerCase();
+      const idx = COLS.findIndex((c) => c[0] === ordem.col), get = COLS[idx][2];
+      let deps = departments(current).filter((d) => d.department.toLowerCase().includes(q));
+      deps.sort((a, b) => { const x = get(a), y = get(b); return (x === null) - (y === null) || (x > y ? 1 : x < y ? -1 : 0) * ordem.dir; });
+      $('cab-carga').innerHTML = COLS.map((c) => '<th class="px-4 py-3 cursor-pointer select-none hover:text-slate-800" data-col="' + c[0] + '">' + c[1] + (ordem.col === c[0] ? (ordem.dir > 0 ? ' ▲' : ' ▼') : '') + '</th>').join('');
+      $('cab-carga').querySelectorAll('th').forEach((th) => th.addEventListener('click', () => {
+        ordem = { col: th.dataset.col, dir: ordem.col === th.dataset.col ? -ordem.dir : -1 }; renderCarga();
+      }));
+      $('linhas-carga').innerHTML = deps.map((d) => '<tr class="hover:bg-slate-50/80"><td class="px-4 py-3 font-medium text-slate-900">' + d.department + '</td>' +
+        '<td class="px-4 py-3">' + nf(d.n) + '</td>' +
+        [['hours', 1, 'h'], ['ot', 1, 'h'], ['proj', 1, ''], ['train', 1, ''], ['remote', 1, '%'], ['sat', 2, ''], ['sick', 1, '']].map(([m, c, u]) => {
+          const v = mean(d, m); return '<td class="px-4 py-3">' + (v === null ? '<span class="text-slate-300">–</span>' : nf(v, c) + u) + '</td>'; }).join('') + '</tr>').join('');
+      $('carga-rodape').textContent = deps.length + ' departamentos · "–" = a base não possui o campo. Afastamento só aparece para grupos com 5+ pessoas (LGPD).';
+    }
+
+    function exportar() {
+      DT.csv('equipes_' + current + '.csv', COLS.map((c) => c[1]), departments(current).map((d) => COLS.map((c) => { const v = c[2](d); return typeof v === 'number' && !Number.isInteger(v) ? v.toFixed(2) : v; })));
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      DT.sourceTabs($('fonte-tabs'), render); DT.sourceTabs($('fonte-tabs-mobile'), render);
+      $('busca').addEventListener('input', renderCarga);
+      $('btn-export').addEventListener('click', exportar);
+      render('all');
+    });
+  </script>
+</body>
+</html>

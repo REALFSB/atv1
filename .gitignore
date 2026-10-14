@@ -1,0 +1,10 @@
+.vercel
+__pycache__/
+.pytest_cache/
+*.pyc
+data/*
+!data/.gitkeep
+artifacts/
+.env
+
+.vercel

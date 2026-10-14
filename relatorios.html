@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack - Relatórios</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Geração de arquivos no navegador (PDF e XLSX) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+  <script src="dashboard-data.js"></script>
+  <script src="risco-data.js"></script>
+  <script src="datatrack.js"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+  <div class="flex min-h-screen">
+    <aside id="sidebar" class="w-64 bg-slate-900 text-slate-300 flex-col justify-between shrink-0 hidden md:flex border-r border-slate-800"></aside>
+
+    <main class="flex-1 flex flex-col min-w-0">
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <div>
+          <h1 class="text-lg font-semibold text-slate-900">Central de Relatórios & Exportações</h1>
+          <p class="text-xs text-slate-500">Relatórios gerados na hora a partir das bases do Kaggle</p>
+        </div>
+        <button onclick="toggleScheduleModal(true)" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg transition border border-slate-200">
+          <i data-lucide="clock" class="w-3.5 h-3.5"></i> Agendamentos <span id="n-agend" class="ml-1 bg-white text-slate-600 px-1.5 rounded-full border border-slate-200">0</span>
+        </button>
+      </header>
+
+      <div class="p-6 space-y-6">
+        <!-- Construtor -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Gerar Relatório Sob Demanda</h2>
+              <p class="text-xs text-slate-400">Configure os parâmetros e baixe o arquivo</p>
+            </div>
+            <span id="atualizado" class="text-xs bg-blue-50 text-blue-700 font-semibold px-2.5 py-1 rounded-full border border-blue-100"></span>
+          </div>
+          <form id="form-rel" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-xs">
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Tipo de Relatório</label>
+              <select id="f-tipo" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700"></select>
+            </div>
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Base de Dados</label>
+              <select id="f-base" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700"></select>
+            </div>
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Departamento</label>
+              <select id="f-dep" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700"></select>
+            </div>
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Formato de Saída</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <label class="cursor-pointer border border-slate-200 rounded-lg py-2 flex items-center justify-center hover:bg-slate-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/50"><input type="radio" name="format" value="pdf" checked class="hidden" /><span class="font-bold text-[11px] text-slate-700">PDF</span></label>
+                <label class="cursor-pointer border border-slate-200 rounded-lg py-2 flex items-center justify-center hover:bg-slate-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/50"><input type="radio" name="format" value="xlsx" class="hidden" /><span class="font-bold text-[11px] text-slate-700">XLSX</span></label>
+                <label class="cursor-pointer border border-slate-200 rounded-lg py-2 flex items-center justify-center hover:bg-slate-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/50"><input type="radio" name="format" value="csv" class="hidden" /><span class="font-bold text-[11px] text-slate-700">CSV</span></label>
+              </div>
+            </div>
+            <div class="flex items-end">
+              <button type="submit" class="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 shadow-sm transition">
+                <i data-lucide="file-down" class="w-4 h-4"></i> Gerar Arquivo
+              </button>
+            </div>
+          </form>
+          <p id="msg" class="text-xs mt-3 text-slate-500 hidden"></p>
+        </div>
+
+        <!-- Modelos -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-slate-900">Modelos Pré-Configurados</h2>
+            <span class="text-xs text-slate-400">Padrões de fechamento executivo</span>
+          </div>
+          <div id="modelos" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+        </div>
+
+        <!-- Histórico -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Histórico de Extrações</h2>
+              <p class="text-xs text-slate-400">Arquivos gerados neste navegador · "Baixar" gera de novo com os dados atuais</p>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+                <input id="h-busca" type="text" placeholder="Buscar por arquivo..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-48" />
+              </div>
+              <select id="h-fmt" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option value="">Todos os formatos</option><option value="pdf">Apenas PDF</option><option value="sheet">Planilhas (XLSX/CSV)</option>
+              </select>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                <tr><th class="px-5 py-3">Arquivo</th><th class="px-4 py-3">Base</th><th class="px-4 py-3">Gerado em</th><th class="px-4 py-3">Tamanho</th><th class="px-4 py-3 text-center">Ação</th></tr>
+              </thead>
+              <tbody id="hist" class="divide-y divide-slate-100"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: AGENDAMENTO -->
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-semibold text-slate-900">Agendamentos de Relatório</h3>
+        <button onclick="toggleScheduleModal(false)" class="text-slate-400 hover:text-slate-600"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+      <form id="form-agend" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Título</label>
+          <input id="a-tit" type="text" placeholder="Ex: Fechamento semanal da diretoria" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+          <div><label class="block font-medium text-slate-700 mb-1">Relatório</label><select id="a-tipo" class="w-full px-3 py-2 border border-slate-200 rounded-lg"></select></div>
+          <div><label class="block font-medium text-slate-700 mb-1">Frequência</label>
+            <select id="a-freq" class="w-full px-3 py-2 border border-slate-200 rounded-lg"><option>Diário (07:00)</option><option>Semanal (segunda, 08:00)</option><option>Mensal (1º dia útil)</option></select></div>
+        </div>
+        <div><label class="block font-medium text-slate-700 mb-1">Destinatários</label>
+          <input id="a-dest" type="text" placeholder="diretoria@empresa.com" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required /></div>
+        <div class="bg-amber-50 border border-amber-200 text-amber-800 rounded-lg p-3">O agendamento fica registrado neste navegador. O <strong>envio automático por e-mail exige um servidor</strong> e está previsto para a Onda 2 (US10).</div>
+        <div id="lista-agend" class="space-y-1.5"></div>
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="toggleScheduleModal(false)" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold">Fechar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm">Salvar Agendamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const { D, nf, pf, mean, aggregate, rowsOf, departments, metaDef, attainment, statusOf, metaRows } = DT;
+    DT.sidebar('relatorios.html');
+    const $ = (id) => document.getElementById(id);
+    const HKEY = 'datatrack.relatorios.historico', AKEY = 'datatrack.relatorios.agendamentos';
+    const load = (k) => { try { return JSON.parse(localStorage.getItem(k) || '[]'); } catch (e) { return []; } };
+    const save = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) { /* ignora */ } };
+    const prodDef = metaDef('prod');
+    const f1 = (v) => (v === null ? '' : +v.toFixed(2));
+
+    /* ---- catálogo de relatórios: cada um devolve {titulo, cab, linhas} ---- */
+    const TIPOS = {
+      performance: { nome: 'Performance Consolidada (Geral)', build: (src, dep) => ({
+        cab: ['Departamento', 'Funcionários', 'Horas/semana', 'Produtividade (pts)', 'Atingimento (%)', 'Status'],
+        linhas: departments(src).filter((d) => !dep || d.department === dep).sort((a, b) => b.n - a.n).map((d) => {
+          const p = mean(d, 'prod'), pct = attainment(prodDef, p);
+          return [d.department, d.n, f1(mean(d, 'hours')), f1(p), f1(pct), statusOf(pct).label]; }) }) },
+      coorte: { nome: 'Produtividade por Ano de Admissão', build: (src) => {
+        const m = {}; D.by_year.filter((r) => src === 'all' || r.source === src).forEach((r) => { const o = m[r.year] = m[r.year] || [0, 0, 0]; o[0] += r.prod[0]; o[1] += r.prod[1]; o[2] += r.n; });
+        return { cab: ['Ano de admissão', 'Funcionários', 'Produtividade média (pts)'],
+          linhas: Object.keys(m).sort().filter((y) => m[y][1] >= 5).map((y) => [+y, m[y][2], f1(m[y][0] / m[y][1])]) }; } },
+      carga: { nome: 'Carga de Trabalho & Horas Extras', build: (src, dep) => ({
+        cab: ['Departamento', 'Funcionários', 'Horas/semana', 'Horas extras', 'Projetos', 'Treinamento (h)', '% Remoto'],
+        linhas: departments(src).filter((d) => !dep || d.department === dep).sort((a, b) => b.n - a.n).map((d) => [d.department, d.n, f1(mean(d, 'hours')), f1(mean(d, 'ot')), f1(mean(d, 'proj')), f1(mean(d, 'train')), f1(mean(d, 'remote'))]) }) },
+      absenteismo: { nome: 'Absenteísmo & Retenção', build: (src, dep) => ({
+        cab: ['Departamento', 'Funcionários', 'Desligados', 'Retenção (%)', 'Afastamento médio (dias/ano)', 'Absenteísmo elevado (%)'],
+        linhas: departments(src).filter((d) => (!dep || d.department === dep) && d.sick[1]).sort((a, b) => b.n - a.n).map((d) => [d.department, d.n, d.resigned, f1((d.n - d.resigned) / d.n * 100), f1(mean(d, 'sick')), f1(d.sick_high / d.sick[1] * 100)]) }) },
+      metas: { nome: 'Atingimento de Metas (OKRs)', build: (src, dep) => ({
+        cab: ['Indicador', 'Departamento', 'Alvo', 'Realizado', 'Atingimento (%)', 'Status'],
+        linhas: metaRows(src).filter((m) => !dep || m.dep === dep).sort((a, b) => a.pct - b.pct).map((m) => [m.def.nome, m.dep, (m.def.sentido === 'min' ? '<= ' : '>= ') + m.def.alvo + ' ' + m.def.unidade, f1(m.valor), f1(m.pct), m.status.label]) }) },
+      risco: { nome: 'Radar de Risco de Ausência (top 200)', build: (src, dep) => {
+        const R = window.RISCO_DATA; const aviso = R && !R.meets_targets ? 'Modelo abaixo da meta (AUC ' + (R.metrics.roc_auc || 0).toFixed(2) + '): não usar para decisões.' : '';
+        return { aviso, cab: ['Rank', 'ID (hash)', 'Departamento', 'Cargo', 'Risco', 'Faixa', 'Fatores'],
+          linhas: R ? R.ranking.filter((r) => !dep || r.department === dep).map((r) => [r.rank, r.id, r.department, r.job_title, f1(r.risk), r.band, r.factors]) : [] }; } },
+    };
+
+    function popular() {
+      const tipos = Object.keys(TIPOS).map((k) => '<option value="' + k + '">' + TIPOS[k].nome + '</option>').join('');
+      $('f-tipo').innerHTML = tipos; $('a-tipo').innerHTML = tipos;
+      $('f-base').innerHTML = '<option value="all">Todas as bases</option>' + Object.keys(D.sources).map((k) => '<option value="' + k + '">' + D.sources[k].label + '</option>').join('');
+      $('f-dep').innerHTML = '<option value="">Todos os Departamentos</option>' + departments('all').map((d) => d.department).sort().map((d) => '<option>' + d + '</option>').join('');
+      $('atualizado').textContent = 'Dados gerados em ' + DT.generatedAt();
+    }
+
+    const slug = (s) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-zA-Z0-9]+/g, '_').replace(/^_|_$/g, '');
+    const stamp = () => new Date().toISOString().slice(0, 16).replace(/[-:T]/g, '');
+
+    /* gera e baixa o arquivo; devolve {nome, tamanho} */
+    function gerar(cfg) {
+      const t = TIPOS[cfg.tipo], rel = t.build(cfg.base, cfg.dep);
+      if (!rel.linhas.length) throw new Error('Sem dados para esse recorte (ex.: a base escolhida não possui esses campos).');
+      const nome = slug(t.nome) + '_' + cfg.base + (cfg.dep ? '_' + slug(cfg.dep) : '') + '_' + stamp() + '.' + cfg.fmt;
+      const sub = DT.sourceNote(cfg.base) + (cfg.dep ? ' · ' + cfg.dep : '') + ' · gerado em ' + new Date().toLocaleString('pt-BR');
+      let tamanho;
+      if (cfg.fmt === 'csv') tamanho = DT.csv(nome, rel.cab, rel.linhas);
+      else if (cfg.fmt === 'xlsx') {
+        if (!window.XLSX) throw new Error('Biblioteca XLSX não carregou (verifique a conexão).');
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet([[t.nome], [sub], [], rel.cab].concat(rel.linhas)), 'Relatorio');
+        tamanho = DT.download(nome, new Blob([XLSX.write(wb, { type: 'array', bookType: 'xlsx' })], { type: 'application/octet-stream' }));
+      } else {
+        if (!window.jspdf) throw new Error('Biblioteca PDF não carregou (verifique a conexão).');
+        const doc = new window.jspdf.jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+        doc.setFontSize(15); doc.text('DataTrack - ' + t.nome, 40, 44);
+        doc.setFontSize(9); doc.setTextColor(100); doc.text(sub, 40, 60);
+        if (rel.aviso) { doc.setTextColor(185, 28, 28); doc.text(rel.aviso, 40, 74); }
+        doc.autoTable({ head: [rel.cab], body: rel.linhas.map((l) => l.map((c) => String(c))), startY: rel.aviso ? 86 : 74, styles: { fontSize: 8 }, headStyles: { fillColor: [37, 99, 235] } });
+        tamanho = DT.download(nome, doc.output('blob'));
+      }
+      return { nome, tamanho };
+    }
+
+    function executar(cfg) {
+      const msg = $('msg'); msg.classList.remove('hidden');
+      try {
+        const r = gerar(cfg);
+        const h = load(HKEY); h.unshift({ nome: r.nome, cfg, tamanho: r.tamanho, quando: new Date().toISOString() }); save(HKEY, h.slice(0, 30));
+        msg.className = 'text-xs mt-3 text-emerald-600'; msg.textContent = 'Arquivo gerado: ' + r.nome + ' (' + (r.tamanho / 1024).toFixed(1) + ' KB)';
+        renderHist();
+      } catch (e) { msg.className = 'text-xs mt-3 text-rose-600'; msg.textContent = e.message; }
+    }
+
+    const FMT_COR = { pdf: 'bg-rose-50 text-rose-600', xlsx: 'bg-emerald-50 text-emerald-700', csv: 'bg-blue-50 text-blue-700' };
+    function renderHist() {
+      const q = $('h-busca').value.toLowerCase(), f = $('h-fmt').value;
+      const h = load(HKEY).filter((x) => (!q || x.nome.toLowerCase().includes(q)) && (!f || (f === 'pdf' ? x.cfg.fmt === 'pdf' : x.cfg.fmt !== 'pdf')));
+      $('hist').innerHTML = h.length ? h.map((x, i) => '<tr class="hover:bg-slate-50"><td class="px-5 py-3.5"><div class="flex items-center gap-2.5"><span class="p-1.5 rounded font-bold text-[10px] ' + FMT_COR[x.cfg.fmt] + '">' + x.cfg.fmt.toUpperCase() + '</span>' +
+        '<div><p class="font-medium text-slate-900">' + x.nome + '</p><p class="text-[11px] text-slate-400">' + TIPOS[x.cfg.tipo].nome + (x.cfg.dep ? ' · ' + x.cfg.dep : '') + '</p></div></div></td>' +
+        '<td class="px-4 py-3.5 text-slate-600">' + (x.cfg.base === 'all' ? 'Todas' : D.sources[x.cfg.base].label) + '</td>' +
+        '<td class="px-4 py-3.5 text-slate-500">' + new Date(x.quando).toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' }) + '</td>' +
+        '<td class="px-4 py-3.5 font-mono text-slate-500">' + (x.tamanho / 1024).toFixed(1) + ' KB</td>' +
+        '<td class="px-4 py-3.5 text-center"><button data-i="' + i + '" class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 mx-auto"><i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar</button></td></tr>').join('')
+        : '<tr><td colspan="5" class="px-5 py-6 text-center text-slate-400">Nenhum arquivo gerado ainda. Use o formulário acima ou um modelo.</td></tr>';
+      $('hist').querySelectorAll('button[data-i]').forEach((b) => b.addEventListener('click', () => { const x = h[+b.dataset.i]; try { gerar(x.cfg); } catch (e) { alert(e.message); } }));
+      lucide.createIcons();
+    }
+
+    const MODELOS = [
+      { icon: 'bar-chart-3', cor: 'bg-blue-50 text-blue-600', tag: 'Executivo', nome: 'Fechamento de Performance por Departamento', desc: 'Funcionários, horas, produtividade e atingimento da meta de cada departamento.', cfg: { tipo: 'performance', base: 'all', dep: '', fmt: 'pdf' } },
+      { icon: 'clock-alert', cor: 'bg-emerald-50 text-emerald-600', tag: 'RH', nome: 'Auditoria de Absenteísmo & Retenção', desc: 'Desligamentos, afastamento médio e % de absenteísmo elevado (≥ 11 dias) por departamento.', cfg: { tipo: 'absenteismo', base: 'extended', dep: '', fmt: 'xlsx' } },
+      { icon: 'award', cor: 'bg-purple-50 text-purple-600', tag: 'Metas', nome: 'Dossiê de Metas (OKRs)', desc: 'Atingimento de cada indicador por departamento, do pior para o melhor.', cfg: { tipo: 'metas', base: 'all', dep: '', fmt: 'pdf' } },
+    ];
+    function renderModelos() {
+      $('modelos').innerHTML = MODELOS.map((m, i) => '<div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-slate-300 transition"><div>' +
+        '<div class="flex items-center justify-between mb-3"><span class="p-2 ' + m.cor + ' rounded-lg"><i data-lucide="' + m.icon + '" class="w-5 h-5"></i></span>' +
+        '<span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase bg-slate-100 px-2 py-0.5 rounded">' + m.tag + '</span></div>' +
+        '<h3 class="font-semibold text-slate-900 text-sm">' + m.nome + '</h3><p class="text-xs text-slate-500 mt-1">' + m.desc + '</p></div>' +
+        '<div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between"><span class="text-[11px] text-slate-400">' + m.cfg.fmt.toUpperCase() + ' · ' + (m.cfg.base === 'all' ? 'todas as bases' : D.sources[m.cfg.base].label) + '</span>' +
+        '<button data-m="' + i + '" class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1">Gerar agora <i data-lucide="download" class="w-3.5 h-3.5"></i></button></div></div>').join('');
+      $('modelos').querySelectorAll('button[data-m]').forEach((b) => b.addEventListener('click', () => executar(MODELOS[+b.dataset.m].cfg)));
+    }
+
+    function toggleScheduleModal(show) { $('scheduleModal').classList.toggle('hidden', !show); if (show) renderAgend(); }
+    function renderAgend() {
+      const a = load(AKEY); $('n-agend').textContent = a.length;
+      $('lista-agend').innerHTML = a.map((x, i) => '<div class="flex items-center justify-between bg-slate-50 border border-slate-200 rounded-lg px-3 py-2"><span><strong>' + x.tit + '</strong> · ' + TIPOS[x.tipo].nome + ' · ' + x.freq + ' · ' + x.dest + '</span>' +
+        '<button type="button" data-rm="' + i + '" class="text-slate-400 hover:text-rose-600"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>').join('');
+      $('lista-agend').querySelectorAll('[data-rm]').forEach((b) => b.addEventListener('click', () => { const l = load(AKEY); l.splice(+b.dataset.rm, 1); save(AKEY, l); renderAgend(); }));
+      lucide.createIcons();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      popular(); renderModelos(); renderHist(); renderAgend();
+      $('form-rel').addEventListener('submit', (e) => { e.preventDefault(); executar({ tipo: $('f-tipo').value, base: $('f-base').value, dep: $('f-dep').value, fmt: document.querySelector('input[name=format]:checked').value }); });
+      $('h-busca').addEventListener('input', renderHist); $('h-fmt').addEventListener('change', renderHist);
+      $('form-agend').addEventListener('submit', (e) => { e.preventDefault(); const l = load(AKEY); l.push({ tit: $('a-tit').value, tipo: $('a-tipo').value, freq: $('a-freq').value, dest: $('a-dest').value }); save(AKEY, l); $('form-agend').reset(); renderAgend(); });
+      lucide.createIcons();
+    });
+  </script>
+</body>
+</html>

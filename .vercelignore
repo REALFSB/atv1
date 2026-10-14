@@ -1,0 +1,6 @@
+src/
+requirements.txt
+tests/
+data/
+artifacts/
+*.py
