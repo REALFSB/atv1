@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack - Central de Relatórios</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Ícones Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+  <div class="flex min-h-screen">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 hidden md:flex border-r border-slate-800">
+      <div>
+        <!-- Logo -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-800">
+          <div class="flex items-center gap-2 font-bold text-lg text-white">
+            <span class="p-1.5 bg-blue-600 rounded-lg text-white shadow-md shadow-blue-500/20">
+              <i data-lucide="activity" class="w-5 h-5"></i>
+            </span>
+            <span>Data<span class="text-blue-500">Track</span></span>
+          </div>
+        </div>
+
+        <!-- Navegação entre Páginas -->
+        <nav class="p-4 space-y-1.5">
+          <!-- Link para Dashboard Geral -->
+          <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+            <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard Geral
+            <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">22</span>
+          </a>
+          
+          <!-- Link para Equipes e Escalas -->
+          <a href="equipes.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+            <i data-lucide="users" class="w-4 h-4"></i> Equipes & Escalas
+            <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">148</span>
+          </a>
+          
+          <!-- Link para Gestão de Metas -->
+          <a href="metas.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+            <i data-lucide="target" class="w-4 h-4"></i> Gestão de Metas
+            <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">22</span>
+          </a>
+
+          <!-- Link ATIVO: Relatórios -->
+          <a href="relatorios.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm transition shadow-sm">
+            <i data-lucide="file-text" class="w-4 h-4"></i> Relatórios
+            <span class="ml-auto bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">PDF</span>
+          </a>
+        </nav>
+      </div>
+
+      <!-- Perfil / Rodapé da Sidebar -->
+      <div class="p-4 border-t border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold text-xs">
+            GR
+          </div>
+          <div class="text-xs truncate">
+            <p class="font-semibold text-white">Guilherme Ramos</p>
+            <p class="text-slate-400">Head de Operações</p>
+          </div>
+          <button class="ml-auto text-slate-500 hover:text-white">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0">
+      <!-- Topo da Tela -->
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <div>
+          <h1 class="text-lg font-semibold text-slate-900">Central de Relatórios & Exportações</h1>
+          <p class="text-xs text-slate-500">Auditoria, extração de dados e fechamento consolidado</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="toggleScheduleModal(true)" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg transition border border-slate-200">
+            <i data-lucide="clock" class="w-3.5 h-3.5"></i> Agendamentos Automáticos
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 space-y-6">
+
+        <!-- Banner / Construtor Rápido de Relatório Personalizado -->
+        <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Gerar Relatório Sob Demanda</h2>
+              <p class="text-xs text-slate-400">Configure os parâmetros operacionais para extração imediata</p>
+            </div>
+            <span class="text-xs bg-blue-50 text-blue-700 font-semibold px-2.5 py-1 rounded-full border border-blue-100">
+              Dados atualizados há 4 min
+            </span>
+          </div>
+
+          <form onsubmit="handleGenerate(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 text-xs">
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Tipo de Relatório</label>
+              <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+                <option>Performance Consolidada (Geral)</option>
+                <option>Produtividade por Operador</option>
+                <option>Aderência de Escalas & Ponto</option>
+                <option>Auditoria de Horas Extras</option>
+                <option>Atingimento de SLAs & Metas</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Período de Análise</label>
+              <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+                <option>Hoje (Tempo Real)</option>
+                <option>Ontem (D-1 Consolidado)</option>
+                <option>Últimos 7 Dias (Semana Operacional)</option>
+                <option>Mês Atual (Setembro / 2026)</option>
+                <option>Mês Anterior (Agosto / 2026)</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Célula / Setor</label>
+              <select class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-slate-700">
+                <option>Todos os Departamentos</option>
+                <option>Operações E-commerce</option>
+                <option>Logística & Expedição</option>
+                <option>Atendimento & Suporte</option>
+                <option>Qualidade & Auditoria</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block font-medium text-slate-700 mb-1.5">Formato de Saída</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <label class="cursor-pointer border border-slate-200 rounded-lg py-2 flex flex-col items-center justify-center hover:bg-slate-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/50">
+                  <input type="radio" name="format" value="pdf" checked class="hidden" />
+                  <span class="font-bold text-[11px] text-slate-700">PDF</span>
+                </label>
+                <label class="cursor-pointer border border-slate-200 rounded-lg py-2 flex flex-col items-center justify-center hover:bg-slate-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/50">
+                  <input type="radio" name="format" value="xlsx" class="hidden" />
+                  <span class="font-bold text-[11px] text-slate-700">XLSX</span>
+                </label>
+                <label class="cursor-pointer border border-slate-200 rounded-lg py-2 flex flex-col items-center justify-center hover:bg-slate-50 has-[:checked]:border-blue-600 has-[:checked]:bg-blue-50/50">
+                  <input type="radio" name="format" value="csv" class="hidden" />
+                  <span class="font-bold text-[11px] text-slate-700">CSV</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="flex items-end">
+              <button type="submit" class="w-full h-9 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg flex items-center justify-center gap-2 shadow-sm transition">
+                <i data-lucide="file-down" class="w-4 h-4"></i> Gerar Arquivo
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Modelos de Relatórios Mais Acessados (Quick Reports) -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-slate-900">Modelos Pré-Configurados</h2>
+            <span class="text-xs text-slate-400">Padrões de fechamento executivo</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+            <!-- Card 1 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-slate-300 transition">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="p-2 bg-blue-50 text-blue-600 rounded-lg">
+                    <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+                  </span>
+                  <span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase bg-slate-100 px-2 py-0.5 rounded">Diário</span>
+                </div>
+                <h3 class="font-semibold text-slate-900 text-sm">Fechamento de Produtividade Diária</h3>
+                <p class="text-xs text-slate-500 mt-1">Visão consolidada de volume trabalhado, peças/hora, metas batidas e gargalos por turno.</p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">PDF • ~1.8 MB</span>
+                <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                  Baixar Último <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-slate-300 transition">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg">
+                    <i data-lucide="clock-alert" class="w-5 h-5"></i>
+                  </span>
+                  <span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase bg-slate-100 px-2 py-0.5 rounded">Semanal</span>
+                </div>
+                <h3 class="font-semibold text-slate-900 text-sm">Auditoria de Presença & Horas Extras</h3>
+                <p class="text-xs text-slate-500 mt-1">Detalhamento individual de banco de horas, absenteísmo justificado, atrasos e custos de H.E.</p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">XLSX • ~4.2 MB</span>
+                <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                  Baixar Último <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between hover:border-slate-300 transition">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <span class="p-2 bg-purple-50 text-purple-600 rounded-lg">
+                    <i data-lucide="award" class="w-5 h-5"></i>
+                  </span>
+                  <span class="text-[10px] font-bold tracking-wider text-slate-500 uppercase bg-slate-100 px-2 py-0.5 rounded">Mensal</span>
+                </div>
+                <h3 class="font-semibold text-slate-900 text-sm">Dossiê de OKRs, Metas & SLAs</h3>
+                <p class="text-xs text-slate-500 mt-1">Atingimento percentual por setor, comparativo com baseline e ranking de desempenho de times.</p>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between">
+                <span class="text-[11px] text-slate-400">PDF • ~3.1 MB</span>
+                <button class="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1">
+                  Baixar Último <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela: Repositório & Histórico de Relatórios Emitidos -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Histórico de Extrações & Arquivos Gerados</h2>
+              <p class="text-xs text-slate-400">Repositório com links diretos válidos por 30 dias</p>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+                <input type="text" placeholder="Buscar por arquivo..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-48" />
+              </div>
+              <select class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option>Todos os formatos</option>
+                <option>Apenas PDF</option>
+                <option>Apenas Planilhas (XLSX/CSV)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">Arquivo / Descrição</th>
+                  <th class="px-4 py-3">Período Coberto</th>
+                  <th class="px-4 py-3">Solicitante</th>
+                  <th class="px-4 py-3">Gerado em</th>
+                  <th class="px-4 py-3">Tamanho</th>
+                  <th class="px-4 py-3 text-center">Status</th>
+                  <th class="px-4 py-3 text-center">Download</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                
+                <!-- Linha 1 -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="p-1.5 bg-rose-50 text-rose-600 rounded font-bold text-[10px]">PDF</span>
+                      <div>
+                        <p class="font-medium text-slate-900">Fechamento_Operacional_Consolidado_D08.pdf</p>
+                        <p class="text-[11px] text-slate-400">Geral • Todos os Turnos</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-600">08/Set/2026</td>
+                  <td class="px-4 py-3.5 text-slate-800">Guilherme Ramos</td>
+                  <td class="px-4 py-3.5 text-slate-500">09/Set às 06:10</td>
+                  <td class="px-4 py-3.5 font-mono text-slate-500">2.1 MB</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Pronto</span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 mx-auto">
+                      <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Linha 2 -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="p-1.5 bg-emerald-50 text-emerald-700 rounded font-bold text-[10px]">XLSX</span>
+                      <div>
+                        <p class="font-medium text-slate-900">Auditoria_Escalas_HorasExtras_Semana36.xlsx</p>
+                        <p class="text-[11px] text-slate-400">Logística & Atendimento</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-600">01/Set - 07/Set</td>
+                  <td class="px-4 py-3.5 text-slate-800">Mariana Prado</td>
+                  <td class="px-4 py-3.5 text-slate-500">08/Set às 18:30</td>
+                  <td class="px-4 py-3.5 font-mono text-slate-500">5.4 MB</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Pronto</span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 mx-auto">
+                      <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Linha 3 -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="p-1.5 bg-blue-50 text-blue-700 rounded font-bold text-[10px]">CSV</span>
+                      <div>
+                        <p class="font-medium text-slate-900">Throughput_Operadores_RawData_Q3.csv</p>
+                        <p class="text-[11px] text-slate-400">E-commerce • Matrículas #4000 a #4150</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-600">01/Ago - 31/Ago</td>
+                  <td class="px-4 py-3.5 text-slate-800">Carlos Mendes</td>
+                  <td class="px-4 py-3.5 text-slate-500">01/Set às 09:15</td>
+                  <td class="px-4 py-3.5 font-mono text-slate-500">14.8 MB</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">Pronto</span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 mx-auto">
+                      <i data-lucide="download" class="w-3.5 h-3.5"></i> Baixar
+                    </button>
+                  </td>
+                </tr>
+
+                <!-- Linha 4 (Processando) -->
+                <tr class="hover:bg-slate-50 bg-slate-50/40">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2.5">
+                      <span class="p-1.5 bg-rose-50 text-rose-600 rounded font-bold text-[10px]">PDF</span>
+                      <div>
+                        <p class="font-medium text-slate-900">Relatorio_Mensal_Diretoria_Agosto2026.pdf</p>
+                        <p class="text-[11px] text-slate-400">Geral • Auditoria de Qualidade</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-600">01/Ago - 31/Ago</td>
+                  <td class="px-4 py-3.5 text-slate-800">Sistema (Automático)</td>
+                  <td class="px-4 py-3.5 text-slate-500">Agora mesmo</td>
+                  <td class="px-4 py-3.5 font-mono text-slate-400">Calculando...</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 animate-pulse">Gerando...</span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="text-slate-400 text-xs italic">Aguarde</span>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginação -->
+          <div class="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
+            <span>Mostrando 4 de 38 relatórios arquivados</span>
+            <div class="flex items-center gap-2">
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100 disabled:opacity-50">Anterior</button>
+              <button class="px-2.5 py-1 bg-blue-600 text-white rounded font-semibold">1</button>
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100">2</button>
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100">Próximo</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: AGENDAMENTOS AUTOMÁTICOS -->
+  <div id="scheduleModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-150">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-semibold text-slate-900">Agendar Envio Automático por E-mail</h3>
+        <button onclick="toggleScheduleModal(false)" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); toggleScheduleModal(false);" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Título do Agendamento</label>
+          <input type="text" placeholder="Ex: Relatório Matinal da Diretoria" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Frequência</label>
+            <select class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>Diário (às 07:00)</option>
+              <option>Semanal (Segundas às 08:00)</option>
+              <option>Mensal (1º dia útil)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Formato Anexo</label>
+            <select class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>PDF Executivo</option>
+              <option>Planilha Excel (.xlsx)</option>
+              <option>Ambos (PDF + XLSX)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Destinatários (separados por vírgula)</label>
+          <input type="text" placeholder="diretoria@datatrack.com, gerencia@datatrack.com" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="toggleScheduleModal(false)" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm">Salvar Agendamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+
+    // Modal de Agendamentos
+    function toggleScheduleModal(show) {
+      const modal = document.getElementById('scheduleModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    // Feedback visual de download imediato
+    function handleGenerate(event) {
+      event.preventDefault();
+      alert('Relatório solicitado com sucesso! O processamento foi iniciado e o download começará em instantes.');
+    }
+  </script>
+</body>
+</html>

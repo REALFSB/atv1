@@ -1,106 +1,48 @@
-# Plataforma de Monitoramento e Gestão de Performance Operacional
+# DataTrack · Radar de Absenteísmo
 
-**Disciplina:** CCD610 - Projeto e Gestão de Dados
+Painel de operações (HTML + Tailwind, publicado na Vercel) com um pipeline de Machine Learning que prevê o **risco de ausência de cada operador no próximo turno**, para que o Head de Operações remaneje a escala antes de a meta ser afetada.
 
-**Professor:** Victor Perrone de Lima Varela
+Projeto Integrador · CCD610 · Checkpoint (Aulas 4–6): requisitos → arquitetura/SOLID → planejamento.
 
-**Equipe:** Akira Higa, Elizabeth Kremer Kruger, Fernando de Souza Batista, Matheus Cruz 
+## Estrutura do repositório
 
-## Problema
+```
+├── index.html, equipes.html, metas.html, relatorios.html   # painel web (equipes.html exibe o Radar de Risco)
+├── risco-data.js     # saída do modelo lida por equipes.html (gerada por src.serve)
+├── src/
+│   ├── ingest.py     # DataSource (abstração), CsvSource, SyntheticSource, validação, LGPD
+│   ├── features.py   # engenharia de atributos (única, usada por treino e serving)
+│   ├── train.py      # treino, split temporal, métricas, registro de modelos
+│   └── serve.py      # inferência: ranking, faixa, fatores, exportação CSV
+├── tests/            # pytest, um arquivo por módulo
+├── docs/             # backlog, requisitos, arquitetura/SOLID, WBS, riscos, Sprint 1
+├── data/             # dados brutos (fora do Git)
+└── artifacts/        # model.joblib e metrics.json (fora do Git)
+```
 
-Organizações que possuem equipes operacionais precisam acompanhar produtividade e desempenho de seus colaboradores. Entretanto, dados relacionados a funcionários, produtividade, presença, tarefas, satisfação e desempenho podem estar distribuídos em diferentes fontes e formatos.
+## Como executar
 
+```bash
+pip install -r requirements.txt
+python -m pytest -q                    # testes
+python -m src.train                    # treina com dados sintéticos e salva artifacts/
+python -m src.serve                    # gera artifacts/ranking.csv e risco-data.js (painel)
+```
 
-Essa fragmentação dificulta:
+Com a base real (Kaggle) em CSV, ajuste `column_map` em `CsvSource` para o esquema descrito em `docs/02-requisitos.md` e rode:
 
-* &#x09;consolidação das informações;
-* &#x09;acompanhamento de indicadores;
-* &#x09;identificação de quedas de produtividade;
-* &#x09;comparação entre funcionários e equipes;
-* &#x09;identificação de anomalias;
-* &#x09;avaliação da qualidade dos dados;
-* &#x09;tomada de decisão baseada em evidências.
+```bash
+python -m src.train --source csv --path data/minha_base.csv
+python -m src.serve --source csv --path data/minha_base.csv
+```
 
+Defina `DATATRACK_SALT` no ambiente (sal do hash dos IDs; LGPD). Os dados sintéticos servem para validar o pipeline: **suas métricas não representam a operação real**.
 
+## Painel ligado ao modelo
+Após `python -m src.train` e `python -m src.serve`, abra `equipes.html`: a seção **Radar de Risco de Ausência** mostra as faixas, o ranking dos 10 maiores riscos (filtro por setor) e exporta a lista completa em CSV. Faça commit do `risco-data.js` atualizado para a Vercel publicar. Enquanto a fonte for sintética, a página exibe o selo *DADOS SINTÉTICOS (DEMO)*.
 
-## Proposta
+## Arquitetura e SOLID
+Ingestão → features → treino → artefato → serving. Detalhes e diagrama em [`docs/03-arquitetura.md`](docs/03-arquitetura.md). `train_model(source: DataSource)` depende da abstração, não de um CSV.
 
-Desenvolver uma plataforma capaz de integrar múltiplas fontes de dados, executar processos de ETL, aplicar mecanismos de validação e qualidade dos dados, consolidar as informações em uma estrutura analítica e disponibilizar indicadores por meio de dashboards.
-
-A solução permitirá analisar produtividade, desempenho, eficiência, qualidade, presença, satisfação e outros indicadores relevantes.
-
-A ideia de integrar múltiplas fontes é particularmente adequada ao projeto que já definimos anteriormente.
-
-
-
-Por meio do painel, é possível acompanhar o desempenho dos operadores de forma individual e por equipe, identificar tendências, comparar resultados e detectar possíveis desvios de produtividade.
-
-
-
-## Objetivo geral
-
-Desenvolver uma solução de Ciência de Dados para integração, tratamento, governança, análise e visualização de dados relacionados à performance e produtividade de funcionários, apoiando a tomada de decisão gerencial.
-
-
-
-## Objetivos específicos
-
-* &#x09;Integrar diferentes fontes de dados relacionadas aos funcionários e suas atividades.
-* &#x09;Desenvolver um processo ETL para extração, transformação, validação e carga dos dados.
-* &#x09;Padronizar e tratar inconsistências, duplicidades, valores ausentes e dados inválidos.
-* &#x09;Modelar uma estrutura analítica adequada para consultas e indicadores.
-* &#x09;Definir métricas de produtividade e performance.
-* &#x09;Disponibilizar dashboards interativos para análise dos dados.
-* &#x09;Permitir análises por funcionário, equipe, departamento e período.
-* &#x09;Monitorar a qualidade dos dados durante o processo de integração.
-* &#x09;Identificar possíveis anomalias e desvios de comportamento.
-* &#x09;Implementar mecanismos de testes e validação para aumentar a confiabilidade da solução.
-* &#x09;Aplicar práticas de governança de dados, considerando qualidade, rastreabilidade, segurança e controle de acesso.
-* &#x09;Utilizar uma metodologia de desenvolvimento de projetos de Ciência de Dados, especialmente o CRISP-DM, conforme previsto na disciplina.
-
-
-
-## Público-alvo
-
-Inicialmente, teremos três perfis:
-
-### Gestor
-
-Responsável por acompanhar a performance das equipes.
-
-Poderá analisar:
-
-* &#x09;produtividade;
-* &#x09;metas;
-* &#x09;desempenho;
-* &#x09;ranking;
-* &#x09;tendências;
-* &#x09;indicadores da equipe;
-* &#x09;alertas.
-
-### Administrador de dados
-
-Responsável pela confiabilidade dos dados.
-
-Poderá acompanhar
-
-* &#x09;execução do ETL;
-* &#x09;registros processados;
-* &#x09;erros;
-* &#x09;duplicidades;
-* &#x09;valores nulos;
-* &#x09;rejeições;
-* &#x09;histórico das cargas.
-
-### Operador/funcionário
-
-&#x09;Poderá consultar seus próprios indicadores, dependendo das regras de acesso definidas.
-
-## Governança de Dados
-
-- **Origem:** todos os datasets utilizados são públicos, obtidos na plataforma Kaggle (conforme recomendação do professor).
-- **Licenciamento:** cada dataset utilizado terá sua licença Kaggle documentada (ex: CC0, ODbL) antes do uso.
-- **Rastreabilidade:** manteremos um registro (dataset, versão, data de download, link) de cada fonte incorporada ao pipeline.
-- **Qualidade:** dados serão validados no ETL (duplicidade, nulos, tipos inválidos) antes de entrar na estrutura analítica.
-- **Dados sensíveis:** mesmo sendo dados públicos/sintéticos, campos como salário serão tratados com cuidado na exibição (ex: agregação por faixa, não valor individual), simulando boas práticas de privacidade.
-- **Controle de acesso:** os três perfis de usuário (Gestor, Administrador de dados, Operador) terão visibilidade de dados diferente, conforme definido no público-alvo.
+## Documentação do checkpoint
+[`01-backlog`](docs/01-backlog.md) · [`02-requisitos`](docs/02-requisitos.md) · [`03-arquitetura`](docs/03-arquitetura.md) · [`04-planejamento-e-riscos`](docs/04-planejamento-e-riscos.md) · `docs/backlog_issues.csv` (importação para GitHub Issues/Trello).

@@ -1,0 +1,71 @@
+﻿title,body,labels
+US1: uma lista de operadores ordenada por risco de ausência no próximo turno,"Como Guilherme, quero uma lista de operadores ordenada por risco de ausência no próximo turno, para remanejar pessoas antes de a escala furar e proteger as metas do dia.
+
+Dado dados dos últimos 60 dias de 155 operadores carregados
+Quando abro Equipes & Escalas
+Então a lista aparece ordenada do maior para o menor risco, gerada em até 5 s
+
+Canvas: F1 | Módulo: train.py, serve.py | Pontos: 5","onda-1,E1,funcional"
+US2: que o modelo identifique a maior parte das ausências reais,"Como Guilherme, quero que o modelo identifique a maior parte das ausências reais, para confiar na lista e agir sobre ela.
+
+Dado o modelo treinado com dados históricos
+Quando é avaliado nos últimos 25% dos dias (teste temporal)
+Então recall ≥ 0,60 e ROC-AUC ≥ 0,70, registrados em metrics.json
+
+Canvas: F1 | Módulo: features.py, train.py | Pontos: 8","onda-1,E1,métrica do modelo"
+US3: que dados incompletos ou inválidos sejam barrados antes do treino,"Como Guilherme, quero que dados incompletos ou inválidos sejam barrados antes do treino, para evitar decisões baseadas em dado ruim.
+
+Dado um arquivo com mais de 5% de nulos em uma coluna obrigatória
+Quando o pipeline executa a ingestão
+Então o processo é interrompido com erro que lista cada coluna e seu % de nulos
+
+Canvas: F5 | Módulo: ingest.py | Pontos: 3","onda-1,E3,dados"
+US4: que o sistema não use identificadores diretos nem dados de saúde dos operadores,"Como Guilherme, quero que o sistema não use identificadores diretos nem dados de saúde dos operadores, para cumprir a LGPD e preservar a confiança do time.
+
+Dado uma base com ID de funcionário e colunas de saúde
+Quando a ingestão é executada
+Então o ID sai como hash com sal e as colunas de saúde são descartadas
+
+Canvas: F5 | Módulo: ingest.py | Pontos: 3","onda-1,E3,dados / LGPD"
+US5: exportar a lista de risco em CSV,"Como Guilherme, quero exportar a lista de risco em CSV, para compartilhar com os líderes de célula.
+
+Dado uma lista de risco gerada
+Quando clico em exportar
+Então recebo um CSV com todas as linhas e as colunas rank, risco e faixa
+
+Canvas: F2 | Módulo: serve.py | Pontos: 2","onda-1,E2,funcional"
+US6: ver a faixa (Alta/Média/Baixa) e os 3 principais fatores de cada risco,"Como Líder de célula, quero ver a faixa (Alta/Média/Baixa) e os 3 principais fatores de cada risco, para explicar a decisão ao operador e agir na causa.
+
+Dado um operador com risco calculado
+Quando consulto o detalhe
+Então vejo a faixa e exatamente 3 fatores que mais elevam o risco
+
+Canvas: F1 | Módulo: serve.py | Pontos: 3","onda-2,E1,explicabilidade"
+US7: ser alertado quando um operador mudar de faixa de risco,"Como Guilherme, quero ser alertado quando um operador mudar de faixa de risco, para agir a tempo, sem olhar a lista toda dia.
+
+Dado o ranking de ontem e o de hoje
+Quando um operador passa de Média para Alta
+Então o Dashboard exibe alerta com nome da célula e a mudança
+
+Canvas: F3 | Módulo: monitor.py (novo) | Pontos: 5","onda-2,E2,funcional"
+US8: ver o impacto estimado das ausências previstas na meta de cada célula,"Como Guilherme, quero ver o impacto estimado das ausências previstas na meta de cada célula, para decidir onde remanejar primeiro.
+
+Dado o risco por operador e a meta diária da célula
+Quando abro Gestão de Metas
+Então vejo a perda esperada de unidades por célula, ordenada
+
+Canvas: F4 | Módulo: serve.py, monitor.py | Pontos: 8","onda-2,E2,funcional"
+US9: ser avisado quando os dados novos se afastarem dos dados de treino,"Como Guilherme, quero ser avisado quando os dados novos se afastarem dos dados de treino, para saber quando retreinar o modelo.
+
+Dado dados novos de uma semana
+Quando o PSI de qualquer feature passa de 0,2
+Então o painel sinaliza drift e sugere retreino
+
+Canvas: F6 | Módulo: monitor.py (novo) | Pontos: 5","onda-2,E3,dados / drift"
+US10: receber um relatório semanal de risco por célula em PDF,"Como Guilherme, quero receber um relatório semanal de risco por célula em PDF, para levar o tema às reuniões de operação.
+
+Dado a semana fechada
+Quando solicito o relatório em Relatórios
+Então recebo PDF com risco médio e top 5 operadores por célula
+
+Canvas: F2 | Módulo: serve.py | Pontos: 3","onda-2,E2,funcional"

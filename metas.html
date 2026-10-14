@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack - Gestão de Metas</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js para gráficos -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Ícones Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+  <div class="flex min-h-screen">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 hidden md:flex border-r border-slate-800">
+      <div>
+        <!-- Logo -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-800">
+          <div class="flex items-center gap-2 font-bold text-lg text-white">
+            <span class="p-1.5 bg-blue-600 rounded-lg text-white shadow-md shadow-blue-500/20">
+              <i data-lucide="activity" class="w-5 h-5"></i>
+            </span>
+            <span>Data<span class="text-blue-500">Track</span></span>
+          </div>
+        </div>
+
+        <!-- Navegação entre Páginas -->
+        <nav class="p-4 space-y-1.5">
+          <!-- Link para Dashboard Geral -->
+          <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard Geral
+                <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">22</span>
+            </a>
+          
+          <!-- Link para Equipes e Escalas -->
+          <a href="equipes.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+            <i data-lucide="users" class="w-4 h-4"></i> Equipes & Escalas
+            <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">148</span>
+          </a>
+          
+          <!-- Link Ativo: Gestão de Metas -->
+          <a href="metas.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm transition">
+                <i data-lucide="target" class="w-4 h-4"></i> Gestão de Metas
+                <span class="ml-auto bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">22</span>
+            </a>
+
+          <!-- Link Relatórios (Habilitado / Inativo) -->
+             <a href="relatorios.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Relatórios
+                <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">PDF</span>
+            </a>
+        </nav>
+      </div>
+
+      <!-- Perfil / Rodapé da Sidebar -->
+      <div class="p-4 border-t border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold text-xs">
+            GR
+          </div>
+          <div class="text-xs truncate">
+            <p class="font-semibold text-white">Guilherme Ramos</p>
+            <p class="text-slate-400">Head de Operações</p>
+          </div>
+          <button class="ml-auto text-slate-500 hover:text-white">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0">
+      <!-- Topo da Tela -->
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <div>
+          <h1 class="text-lg font-semibold text-slate-900">Gestão Estratégica & Metas Operacionais</h1>
+          <p class="text-xs text-slate-500">Definição, tracking de OKRs e atingimento por célula</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <select class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-3 py-1.5 text-slate-700 font-medium focus:outline-none">
+            <option>Ciclo Atual: Q3 / Mensal</option>
+            <option>Setembro / 2026</option>
+            <option>Agosto / 2026</option>
+          </select>
+          <button onclick="toggleModal(true)" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+            <i data-lucide="plus-circle" class="w-3.5 h-3.5"></i> Nova Meta
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 space-y-6">
+
+        <!-- Métricas Rápidas (KPIs) -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Atingimento Global</span>
+              <span class="p-1.5 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="gauge" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">104.8%</span>
+              <span class="text-xs font-semibold text-emerald-600">+4.8% da base</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Acima do baseline operacional</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Metas no Prazo</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="check-circle-2" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">18 / 22</span>
+              <span class="text-xs font-semibold text-emerald-600">81.8%</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Conforme projeção do ciclo</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Metas sob Risco</span>
+              <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="alert-triangle" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">4</span>
+              <span class="text-xs font-medium text-rose-600">Atenção</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">2 em SAC e 2 em Armazém</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">SLA Médio Geral</span>
+              <span class="p-1.5 rounded-lg bg-purple-50 text-purple-600"><i data-lucide="award" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">98.2%</span>
+              <span class="text-xs font-semibold text-purple-600">Meta: 95%</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Nível de serviço contratual</p>
+          </div>
+        </div>
+
+        <!-- Seção Gráfica: Comparativo Meta vs. Realizado -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <h2 class="text-sm font-semibold text-slate-900">Meta Estabelecida vs. Produção Realizada</h2>
+                <p class="text-xs text-slate-400">Comparação volumétrica por setor (unidades processadas)</p>
+              </div>
+              <span class="text-xs bg-slate-100 text-slate-600 px-2 py-1 rounded">Consolidado Mensal</span>
+            </div>
+            <div class="h-64">
+              <canvas id="targetsComparisonChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Distribuição de Metas por Status -->
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900 mb-1">Distribuição das Metas</h2>
+              <p class="text-xs text-slate-400 mb-4">Classificação por saúde do indicador</p>
+              <div class="h-48 flex items-center justify-center">
+                <canvas id="statusDoughnutChart"></canvas>
+              </div>
+            </div>
+            <div class="pt-4 border-t border-slate-100 grid grid-cols-3 text-center text-xs">
+              <div>
+                <span class="font-bold text-emerald-600">14</span>
+                <p class="text-slate-400">Superadas</p>
+              </div>
+              <div>
+                <span class="font-bold text-amber-600">5</span>
+                <p class="text-slate-400">Em risco</p>
+              </div>
+              <div>
+                <span class="font-bold text-rose-600">3</span>
+                <p class="text-slate-400">Críticas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabela Estruturada de Metas / OKRs -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Matriz de Indicadores & Objetivos (OKRs)</h2>
+              <p class="text-xs text-slate-400">Acompanhamento de metas quantitativas por setor e líder</p>
+            </div>
+
+            <div class="flex items-center gap-2.5">
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+                <input type="text" placeholder="Filtrar meta..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-44" />
+              </div>
+              <select class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option>Todos os Setores</option>
+                <option>E-commerce</option>
+                <option>Expedição</option>
+                <option>Atendimento</option>
+                <option>Qualidade</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                <tr>
+                  <th class="px-5 py-3">Meta / Indicador</th>
+                  <th class="px-4 py-3">Setor & Líder</th>
+                  <th class="px-4 py-3">Alvo (Target)</th>
+                  <th class="px-4 py-3">Realizado</th>
+                  <th class="px-5 py-3 w-48">Progresso</th>
+                  <th class="px-4 py-3">Prazo</th>
+                  <th class="px-4 py-3 text-center">Status</th>
+                  <th class="px-4 py-3 text-center">Ações</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                
+                <!-- Linha 1 -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <p class="font-medium text-slate-900">Throughput de Pedidos Empacotados</p>
+                    <p class="text-[11px] text-slate-400">Unidades/hora por operador</p>
+                  </td>
+                  <td class="px-4 py-3.5">
+                    <p class="font-medium text-slate-800">E-commerce</p>
+                    <p class="text-[11px] text-slate-400">Carlos Mendes</p>
+                  </td>
+                  <td class="px-4 py-3.5 font-semibold text-slate-800">12.000 un</td>
+                  <td class="px-4 py-3.5 font-bold text-emerald-600">12.960 un</td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2">
+                      <div class="flex-1 bg-slate-100 rounded-full h-2">
+                        <div class="bg-emerald-500 h-2 rounded-full" style="width: 100%"></div>
+                      </div>
+                      <span class="font-bold text-emerald-600">108%</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-500">30/Set/2026</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Superada
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+                <!-- Linha 2 -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <p class="font-medium text-slate-900">Tempo de Expedição de Cargas (Dock-to-Stock)</p>
+                    <p class="text-[11px] text-slate-400">Redução de tempo médio de espera</p>
+                  </td>
+                  <td class="px-4 py-3.5">
+                    <p class="font-medium text-slate-800">Expedição</p>
+                    <p class="text-[11px] text-slate-400">Mariana Prado</p>
+                  </td>
+                  <td class="px-4 py-3.5 font-semibold text-slate-800">&le; 45 min</td>
+                  <td class="px-4 py-3.5 font-bold text-blue-600">44 min</td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2">
+                      <div class="flex-1 bg-slate-100 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: 100%"></div>
+                      </div>
+                      <span class="font-bold text-blue-600">102%</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-500">30/Set/2026</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                      No Prazo
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+                <!-- Linha 3 (Meta em Risco) -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <p class="font-medium text-slate-900">Tempo Médio de Resolução de Tickets (TMR)</p>
+                    <p class="text-[11px] text-slate-400">Atendimento em primeiro contato</p>
+                  </td>
+                  <td class="px-4 py-3.5">
+                    <p class="font-medium text-slate-800">Atendimento SAC</p>
+                    <p class="text-[11px] text-slate-400">Fernando Rocha</p>
+                  </td>
+                  <td class="px-4 py-3.5 font-semibold text-slate-800">&le; 12 min</td>
+                  <td class="px-4 py-3.5 font-bold text-amber-600">14.2 min</td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2">
+                      <div class="flex-1 bg-slate-100 rounded-full h-2">
+                        <div class="bg-amber-500 h-2 rounded-full" style="width: 85%"></div>
+                      </div>
+                      <span class="font-bold text-amber-600">85%</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-500">15/Set/2026</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-700 border border-amber-200">
+                      Atenção
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+                <!-- Linha 4 -->
+                <tr class="hover:bg-slate-50">
+                  <td class="px-5 py-3.5">
+                    <p class="font-medium text-slate-900">Índice de Acerto em Auditoria de Qualidade</p>
+                    <p class="text-[11px] text-slate-400">Conformidade e taxa de refugo zero</p>
+                  </td>
+                  <td class="px-4 py-3.5">
+                    <p class="font-medium text-slate-800">Qualidade</p>
+                    <p class="text-[11px] text-slate-400">Renata Dias</p>
+                  </td>
+                  <td class="px-4 py-3.5 font-semibold text-slate-800">98.0%</td>
+                  <td class="px-4 py-3.5 font-bold text-emerald-600">98.5%</td>
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-2">
+                      <div class="flex-1 bg-slate-100 rounded-full h-2">
+                        <div class="bg-emerald-500 h-2 rounded-full" style="width: 100%"></div>
+                      </div>
+                      <span class="font-bold text-emerald-600">105%</span>
+                    </div>
+                  </td>
+                  <td class="px-4 py-3.5 text-slate-500">30/Set/2026</td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Superada
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="edit-3" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL: NOVA META (INICIALMENTE OCULTO) -->
+  <div id="newGoalModal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+    <div class="bg-white rounded-xl shadow-xl border border-slate-200 w-full max-w-lg overflow-hidden animate-in fade-in zoom-in duration-150">
+      <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="font-semibold text-slate-900">Cadastrar Nova Meta Operacional</h3>
+        <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form onsubmit="event.preventDefault(); toggleModal(false);" class="p-6 space-y-4 text-xs">
+        <div>
+          <label class="block font-medium text-slate-700 mb-1">Título do Objetivo / Indicador</label>
+          <input type="text" placeholder="Ex: Taxa de Conversão de Embalagens" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Setor Responsável</label>
+            <select class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+              <option>E-commerce</option>
+              <option>Logística & Expedição</option>
+              <option>Atendimento & Suporte</option>
+              <option>Qualidade & Auditoria</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Líder do Time</label>
+            <input type="text" placeholder="Ex: Carlos Mendes" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Alvo Quantitativo (Target)</label>
+            <input type="text" placeholder="Ex: 15.000 un ou 95%" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          </div>
+          <div>
+            <label class="block font-medium text-slate-700 mb-1">Data Limite (Prazo)</label>
+            <input type="date" class="w-full px-3 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required />
+          </div>
+        </div>
+
+        <div class="pt-4 border-t border-slate-100 flex items-center justify-end gap-2">
+          <button type="button" onclick="toggleModal(false)" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold shadow-sm">Salvar Meta</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPTS E GRÁFICOS -->
+  <script>
+    lucide.createIcons();
+
+    // Controle do Modal
+    function toggleModal(show) {
+      const modal = document.getElementById('newGoalModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    }
+
+    // Gráfico 1: Meta vs. Realizado (Barras Agrupadas)
+    const ctxComp = document.getElementById('targetsComparisonChart').getContext('2d');
+    new Chart(ctxComp, {
+      type: 'bar',
+      data: {
+        labels: ['E-commerce', 'Expedição', 'Atendimento', 'Qualidade'],
+        datasets: [
+          {
+            label: 'Alvo Planejado (Meta)',
+            data: [12000, 10000, 8500, 4000],
+            backgroundColor: '#cbd5e1',
+            borderRadius: 6
+          },
+          {
+            label: 'Produção Realizada',
+            data: [12960, 10200, 7225, 4200],
+            backgroundColor: '#2563eb',
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } }
+        },
+        scales: {
+          y: { grid: { color: '#f1f5f9' }, ticks: { font: { size: 10 } } },
+          x: { grid: { display: false }, ticks: { font: { size: 10 } } }
+        }
+      }
+    });
+
+    // Gráfico 2: Distribuição por Status (Donut)
+    const ctxDoughnut = document.getElementById('statusDoughnutChart').getContext('2d');
+    new Chart(ctxDoughnut, {
+      type: 'doughnut',
+      data: {
+        labels: ['Superadas', 'Em risco', 'Críticas'],
+        datasets: [{
+          data: [14, 5, 3],
+          backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        cutout: '72%'
+      }
+    });
+  </script>
+</body>
+</html>

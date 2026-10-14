@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DataTrack - Equipes & Escalas</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Ícones Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased">
+
+  <div class="flex min-h-screen">
+    <!-- BARRA LATERAL (SIDEBAR) -->
+    <aside class="w-64 bg-slate-900 text-slate-300 flex flex-col justify-between shrink-0 hidden md:flex border-r border-slate-800">
+      <div>
+        <!-- Logo -->
+        <div class="h-16 flex items-center px-6 border-b border-slate-800">
+          <div class="flex items-center gap-2 font-bold text-lg text-white">
+            <span class="p-1.5 bg-blue-600 rounded-lg text-white shadow-md shadow-blue-500/20">
+              <i data-lucide="activity" class="w-5 h-5"></i>
+            </span>
+            <span>Data<span class="text-blue-500">Track</span></span>
+          </div>
+        </div>
+
+        <!-- Navegação entre Páginas -->
+        <nav class="p-4 space-y-1.5">
+            <!-- Link inativo -->
+             <a href="index.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+                <i data-lucide="layout-dashboard" class="w-4 h-4"></i> Dashboard Geral
+                <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">22</span>
+            </a>
+            
+            <!-- Link ATIVO (Azul) -->
+             <a href="equipes.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg bg-blue-600 text-white font-medium text-sm transition">
+                <i data-lucide="users" class="w-4 h-4"></i> Equipes & Escalas
+                <span class="ml-auto bg-white/20 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">148</span>
+            </a>
+            
+            <!-- Link inativo -->
+             <a href="metas.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+                <i data-lucide="target" class="w-4 h-4"></i> Gestão de Metas
+                <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">22</span>
+            </a>
+            
+            <!-- Link Relatórios (Habilitado / Inativo) -->
+             <a href="relatorios.html" class="flex items-center gap-3 px-3.5 py-2.5 rounded-lg hover:bg-slate-800 text-slate-400 hover:text-white font-medium text-sm transition">
+                <i data-lucide="file-text" class="w-4 h-4"></i> Relatórios
+                <span class="ml-auto bg-blue-500/20 text-blue-400 text-[10px] font-bold px-2 py-0.5 rounded-full">PDF</span>
+            </a>
+        </nav>
+
+      </div>
+
+      <!-- Perfil / Rodapé da Sidebar -->
+      <div class="p-4 border-t border-slate-800">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-full bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center font-bold text-xs">
+            GR
+          </div>
+          <div class="text-xs truncate">
+            <p class="font-semibold text-white">Guilherme Ramos</p>
+            <p class="text-slate-400">Head de Operações</p>
+          </div>
+          <button class="ml-auto text-slate-500 hover:text-white">
+            <i data-lucide="log-out" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ÁREA DE CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 flex flex-col min-w-0">
+      <!-- Topo da Tela -->
+      <header class="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-6 sticky top-0 z-10">
+        <div>
+          <h1 class="text-lg font-semibold text-slate-900">Gestão de Equipes & Escalas Operacionais</h1>
+          <p class="text-xs text-slate-500">Alocação de turnos, controle de presença e capacidade diária</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-lg transition border border-slate-200">
+            <i data-lucide="calendar" class="w-3.5 h-3.5"></i> Escala Semanal: 08/Set - 14/Set
+          </button>
+          <button class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Alocar Operador
+          </button>
+        </div>
+      </header>
+
+      <div class="p-6 space-y-6">
+
+        <!-- Métricas de Capacidade e Turnos -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Aderência à Escala</span>
+              <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600"><i data-lucide="check-check" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">95.4%</span>
+              <span class="text-xs font-semibold text-emerald-600">+1.2%</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">148 presentes de 155 programados</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Ausências / Absenteísmo</span>
+              <span class="p-1.5 rounded-lg bg-rose-50 text-rose-600"><i data-lucide="user-x" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">4.6%</span>
+              <span class="text-xs font-medium text-slate-500">7 operadores</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">4 atestados / 3 faltas sem aviso</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Turno em Operação</span>
+              <span class="p-1.5 rounded-lg bg-blue-50 text-blue-600"><i data-lucide="sun" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">T2 (Tarde)</span>
+              <span class="text-xs font-medium text-emerald-600">82 ativos</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Próxima troca em 2h 15m (Turno Noite)</p>
+          </div>
+
+          <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+            <div class="flex items-center justify-between text-slate-500 mb-2">
+              <span class="text-xs font-medium uppercase tracking-wider">Horas Extras Acumuladas</span>
+              <span class="p-1.5 rounded-lg bg-amber-50 text-amber-600"><i data-lucide="alert-circle" class="w-4 h-4"></i></span>
+            </div>
+            <div class="flex items-baseline gap-2">
+              <span class="text-2xl font-bold text-slate-900">18.5h</span>
+              <span class="text-xs font-semibold text-amber-600">Alerta leve</span>
+            </div>
+            <p class="text-xs text-slate-400 mt-1">Concentrado na célula de Logística</p>
+          </div>
+        </div>
+
+        <!-- Cards das Células Operacionais -->
+        <div>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-sm font-semibold text-slate-900">Status das Células Operacionais</h2>
+            <span class="text-xs text-slate-500">4 células monitoradas</span>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+            
+            <!-- Card Célula 1 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">Operação</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 mt-2">E-commerce & Packing</h3>
+                <p class="text-xs text-slate-500">Líder: Carlos Mendes</p>
+
+                <div class="mt-4 space-y-2">
+                  <div class="flex justify-between text-xs">
+                    <span class="text-slate-500">Cobertura da Escala</span>
+                    <span class="font-bold text-slate-800">42 / 42 (100%)</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 100%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Produtividade: <strong class="text-slate-800">96.5%</strong></span>
+                <button class="text-blue-600 font-semibold hover:underline">Detalhes</button>
+              </div>
+            </div>
+
+            <!-- Card Célula 2 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">Logística</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 mt-2">Expedição & Armazém</h3>
+                <p class="text-xs text-slate-500">Líder: Mariana Prado</p>
+
+                <div class="mt-4 space-y-2">
+                  <div class="flex justify-between text-xs">
+                    <span class="text-slate-500">Cobertura da Escala</span>
+                    <span class="font-bold text-slate-800">50 / 52 (96%)</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 96%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Produtividade: <strong class="text-slate-800">92.0%</strong></span>
+                <button class="text-blue-600 font-semibold hover:underline">Detalhes</button>
+              </div>
+            </div>
+
+            <!-- Card Célula 3 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded">Atendimento</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 mt-2">SAC & Resolução</h3>
+                <p class="text-xs text-slate-500">Líder: Fernando Rocha</p>
+
+                <div class="mt-4 space-y-2">
+                  <div class="flex justify-between text-xs">
+                    <span class="text-slate-500">Cobertura da Escala</span>
+                    <span class="font-bold text-amber-600">31 / 34 (91%)</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-amber-500 h-2 rounded-full" style="width: 91%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Produtividade: <strong class="text-slate-800">88.4%</strong></span>
+                <button class="text-blue-600 font-semibold hover:underline">Remanejar</button>
+              </div>
+            </div>
+
+            <!-- Card Célula 4 -->
+            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-purple-600 bg-purple-50 px-2 py-0.5 rounded">Qualidade</span>
+                  <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                </div>
+                <h3 class="font-bold text-slate-900 mt-2">Auditoria de Processos</h3>
+                <p class="text-xs text-slate-500">Líder: Renata Dias</p>
+
+                <div class="mt-4 space-y-2">
+                  <div class="flex justify-between text-xs">
+                    <span class="text-slate-500">Cobertura da Escala</span>
+                    <span class="font-bold text-slate-800">25 / 27 (93%)</span>
+                  </div>
+                  <div class="w-full bg-slate-100 rounded-full h-2">
+                    <div class="bg-emerald-500 h-2 rounded-full" style="width: 93%"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs">
+                <span class="text-slate-500">Produtividade: <strong class="text-slate-800">97.8%</strong></span>
+                <button class="text-blue-600 font-semibold hover:underline">Detalhes</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Radar de Risco de Ausência (saída do modelo: src/serve.py -> risco-data.js) -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="radar-risco">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900 flex items-center gap-2">
+                <i data-lucide="radar" class="w-4 h-4 text-blue-600"></i> Radar de Risco de Ausência
+                <span id="risco-origem" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-500"></span>
+              </h2>
+              <p class="text-xs text-slate-400">Operadores ordenados por probabilidade de ausência no próximo turno (IDs pseudonimizados)</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2.5">
+              <select id="risco-setor" class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option value="">Todos os Setores</option>
+              </select>
+              <button id="risco-export" class="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition shadow-sm">
+                <i data-lucide="download" class="w-3.5 h-3.5"></i> Exportar CSV
+              </button>
+            </div>
+          </div>
+          <div id="risco-vazio" class="hidden p-5 text-xs text-slate-500">Sem dados de risco. Rode <code>python -m src.train</code> e <code>python -m src.serve</code> para gerar o arquivo <code>risco-data.js</code>.</div>
+          <div id="risco-corpo">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-100 border-b border-slate-100 text-xs">
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Alto</p><p id="risco-alta" class="text-xl font-bold text-red-600">-</p></div>
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Médio</p><p id="risco-media" class="text-xl font-bold text-amber-600">-</p></div>
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Baixo</p><p id="risco-baixa" class="text-xl font-bold text-emerald-600">-</p></div>
+              <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Qualidade do modelo</p><p id="risco-modelo" class="text-sm font-semibold text-slate-700 mt-1.5">-</p></div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs text-slate-600">
+                <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100 uppercase tracking-wider">
+                  <tr>
+                    <th class="px-5 py-3">#</th>
+                    <th class="px-5 py-3">Operador (ID)</th>
+                    <th class="px-5 py-3">Setor / Turno</th>
+                    <th class="px-5 py-3">Risco</th>
+                    <th class="px-5 py-3">Faixa</th>
+                    <th class="px-5 py-3">Principais fatores</th>
+                  </tr>
+                </thead>
+                <tbody id="risco-linhas" class="divide-y divide-slate-100"></tbody>
+              </table>
+            </div>
+            <div class="p-4 border-t border-slate-100 bg-slate-50 text-xs text-slate-500" id="risco-rodape"></div>
+          </div>
+        </div>
+
+        <!-- Grade de Escala Semanal dos Colaboradores -->
+        <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+          <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 class="text-sm font-semibold text-slate-900">Quadro de Escalas por Operador</h2>
+              <p class="text-xs text-slate-400">Escala de 6x1 / 5x2 com status de presença em tempo real</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2.5">
+              <div class="relative">
+                <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5"></i>
+                <input type="text" placeholder="Filtrar operador..." class="pl-8 pr-3 py-1.5 text-xs bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-500 w-44" />
+              </div>
+              <select class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option>Todos os Setores</option>
+                <option>E-commerce</option>
+                <option>Logística</option>
+                <option>Atendimento</option>
+              </select>
+              <select class="text-xs bg-slate-50 border border-slate-200 rounded-lg px-2.5 py-1.5 text-slate-700 focus:outline-none">
+                <option>Todos os Turnos</option>
+                <option>Manhã (06h - 14h)</option>
+                <option>Tarde (14h - 22h)</option>
+                <option>Noite (22h - 06h)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Tabela Matriz -->
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="bg-slate-50 text-slate-500 font-semibold border-b border-slate-100">
+                <tr>
+                  <th class="px-5 py-3 w-64">Colaborador / Setor</th>
+                  <th class="px-3 py-3 text-center">Seg 08</th>
+                  <th class="px-3 py-3 text-center">Ter 09</th>
+                  <th class="px-3 py-3 text-center">Qua 10</th>
+                  <th class="px-3 py-3 text-center">Qui 11</th>
+                  <th class="px-3 py-3 text-center">Sex 12</th>
+                  <th class="px-3 py-3 text-center">Sáb 13</th>
+                  <th class="px-3 py-3 text-center">Dom 14</th>
+                  <th class="px-4 py-3 text-center">Status Hoje</th>
+                  <th class="px-4 py-3 text-center">Ações</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-100 text-slate-700">
+                
+                <tr class="hover:bg-slate-50/80">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-xs">
+                        AL
+                      </div>
+                      <div>
+                        <p class="font-medium text-slate-900">André Lourenço</p>
+                        <p class="text-[11px] text-slate-400">E-commerce • Matrícula #4091</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">06-14</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">06-14</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">06-14</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">06-14</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">06-14</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Presente (05:54)
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
+                        BS
+                      </div>
+                      <div>
+                        <p class="font-medium text-slate-900">Beatriz Silva</p>
+                        <p class="text-[11px] text-slate-400">Logística • Matrícula #3912</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-indigo-50 text-indigo-700 font-medium rounded text-[11px]">14-22</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-indigo-50 text-indigo-700 font-medium rounded text-[11px]">14-22</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-indigo-50 text-indigo-700 font-medium rounded text-[11px]">14-22</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-indigo-50 text-indigo-700 font-medium rounded text-[11px]">14-22</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-indigo-50 text-indigo-700 font-medium rounded text-[11px]">14-22</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-amber-50 text-amber-700 font-medium rounded text-[11px]">HE 4h</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Presente (13:50)
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80 bg-rose-50/30">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-rose-100 text-rose-700 flex items-center justify-center font-bold text-xs">
+                        DC
+                      </div>
+                      <div>
+                        <p class="font-medium text-slate-900">Danilo Castro</p>
+                        <p class="text-[11px] text-slate-400">Atendimento • Matrícula #5104</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-rose-100 text-rose-700 font-medium rounded text-[11px]">FALTA</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                      <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Ausente (Sem aviso)
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-xs text-blue-600 hover:underline font-semibold">Cobrir vaga</button>
+                  </td>
+                </tr>
+
+                <tr class="hover:bg-slate-50/80">
+                  <td class="px-5 py-3.5">
+                    <div class="flex items-center gap-3">
+                      <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 flex items-center justify-center font-bold text-xs">
+                        EN
+                      </div>
+                      <div>
+                        <p class="font-medium text-slate-900">Eduarda Nogueira</p>
+                        <p class="text-[11px] text-slate-400">Qualidade • Matrícula #2245</p>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-blue-50 text-blue-700 font-medium rounded text-[11px]">08-17</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-3 py-3.5 text-center"><span class="px-2 py-1 bg-slate-100 text-slate-500 font-medium rounded text-[11px]">FOLGA</span></td>
+                  <td class="px-4 py-3.5 text-center">
+                    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Presente (07:58)
+                    </span>
+                  </td>
+                  <td class="px-4 py-3.5 text-center">
+                    <button class="text-slate-400 hover:text-slate-600 p-1"><i data-lucide="more-horizontal" class="w-4 h-4"></i></button>
+                  </td>
+                </tr>
+
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Paginação -->
+          <div class="p-4 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-xs text-slate-500">
+            <span>Mostrando 4 de 155 colaboradores</span>
+            <div class="flex items-center gap-2">
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100 disabled:opacity-50">Anterior</button>
+              <button class="px-2.5 py-1 bg-blue-600 text-white rounded font-semibold">1</button>
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100">2</button>
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100">3</button>
+              <button class="px-2.5 py-1 bg-white border border-slate-200 rounded hover:bg-slate-100">Próximo</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="risco-data.js"></script>
+  <script>
+    // Radar de Risco de Ausência: lê window.RISCO_DATA (gerado por src/serve.py)
+    (function () {
+      const D = window.RISCO_DATA;
+      const $ = (id) => document.getElementById(id);
+      if (!D || !D.ranking || !D.ranking.length) { $('risco-corpo').classList.add('hidden'); $('risco-vazio').classList.remove('hidden'); $('risco-export').classList.add('hidden'); return; }
+      const FATORES = { prior_absences_30d: 'faltas nos últimos 30 dias', tenure_months: 'tempo de casa', distance_km: 'distância até o trabalho',
+        overtime_hours_week: 'horas extras na semana', productivity_pct: 'produtividade', day_of_week: 'dia da semana',
+        is_monday_or_friday: 'segunda/sexta', overtime_high: 'horas extras altas', sector_Atendimento: 'setor Atendimento',
+        'sector_E-commerce': 'setor E-commerce', 'sector_Logística': 'setor Logística', sector_Qualidade: 'setor Qualidade',
+        shift_Manhã: 'turno Manhã', shift_Tarde: 'turno Tarde', shift_Noite: 'turno Noite' };
+      const COR = { Alta: 'bg-red-50 text-red-700 border-red-200', 'Média': 'bg-amber-50 text-amber-700 border-amber-200', Baixa: 'bg-emerald-50 text-emerald-700 border-emerald-200' };
+      const fmt = (f) => (f || '').split(', ').map((k) => FATORES[k] || k).join(' · ');
+      const setores = [...new Set(D.ranking.map((r) => r.sector))].sort();
+      setores.forEach((x) => { const o = document.createElement('option'); o.value = x; o.textContent = x; $('risco-setor').appendChild(o); });
+      $('risco-origem').textContent = D.source === 'synthetic' ? 'DADOS SINTÉTICOS (DEMO)' : 'DADOS REAIS';
+      $('risco-alta').textContent = D.counts.Alta || 0; $('risco-media').textContent = D.counts['Média'] || 0; $('risco-baixa').textContent = D.counts.Baixa || 0;
+      const m = D.metrics || {};
+      $('risco-modelo').textContent = m.roc_auc ? 'AUC ' + m.roc_auc.toFixed(2) + ' · recall ' + m.recall.toFixed(2) : 'métricas indisponíveis';
+      const filtrar = () => D.ranking.filter((r) => !$('risco-setor').value || r.sector === $('risco-setor').value);
+      function render() {
+        const lista = filtrar(), topo = lista.slice(0, 10);
+        $('risco-linhas').innerHTML = topo.map((r) => '<tr class="hover:bg-slate-50"><td class="px-5 py-3 font-semibold">' + r.rank + '</td>' +
+          '<td class="px-5 py-3 font-mono text-slate-900">' + r.id + '</td><td class="px-5 py-3">' + r.sector + ' · ' + r.shift + '</td>' +
+          '<td class="px-5 py-3 font-semibold text-slate-900">' + (r.risk * 100).toFixed(0) + '%</td>' +
+          '<td class="px-5 py-3"><span class="px-2 py-0.5 rounded-full text-[11px] font-semibold border ' + COR[r.band] + '">' + r.band + '</span></td>' +
+          '<td class="px-5 py-3">' + fmt(r.factors) + '</td></tr>').join('');
+        $('risco-rodape').textContent = 'Mostrando ' + topo.length + ' de ' + lista.length + ' operadores. A exportação traz a lista completa.';
+      }
+      $('risco-setor').addEventListener('change', render);
+      $('risco-export').addEventListener('click', () => {
+        const linhas = [['rank', 'id', 'setor', 'turno', 'risco', 'faixa', 'fatores']].concat(filtrar().map((r) => [r.rank, r.id, r.sector, r.shift, r.risk, r.band, '"' + fmt(r.factors) + '"']));
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob(['\ufeff' + linhas.map((l) => l.join(',')).join('\n')], { type: 'text/csv;charset=utf-8' }));
+        a.download = 'risco_ausencia.csv'; a.click();
+      });
+      render();
+    })();
+  </script>
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
