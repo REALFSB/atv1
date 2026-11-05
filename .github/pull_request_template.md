@@ -6,7 +6,7 @@
 
 ## Checklist do autor
 - [ ] `pytest` verde
-- [ ] `python -m src.train` e `python -m src.serve` rodam ponta a ponta
+- [ ] `python -m src.ml.train` e `python -m src.serving.risk` rodam ponta a ponta
 - [ ] Critérios de aceite (Dado/Quando/Então) da story verificados
 - [ ] README/docs atualizados
 - [ ] Commits pequenos e descritivos (um por módulo)

@@ -10,7 +10,7 @@
 | 2.1 | Dados | Implementar DataSource, CsvSource e SyntheticSource | US1 | A |
 | 2.2 | Dados | Validar qualidade dos dados (nulos, colunas, rótulo) | US3 | B |
 | 2.3 | Dados | Pseudonimizar IDs e descartar colunas sensíveis | US4 | B |
-| 3.1 | Modelagem | Implementar features.py compartilhado por treino e serving | US2 | C |
+| 3.1 | Modelagem | Implementar src/ml/features.py compartilhado por treino e serving | US2 | C |
 | 3.2 | Modelagem | Treinar baseline logístico com split temporal | US2 | C |
 | 3.3 | Modelagem | Registrar métricas e checar metas (recall/AUC) | US2 | C |
 | 4.1 | Serving | Implementar predict_risk e ranking ordenado | US1 | D |
@@ -19,9 +19,9 @@
 | 5.1 | Qualidade | Escrever testes pytest por módulo | US1–US5 | A–D |
 | 5.2 | Qualidade | Abrir e revisar Pull Request com colega | US1–US5 | A–D |
 | 5.3 | Qualidade | Atualizar README e diagrama de arquitetura | US1–US5 | A |
-| 6.1 | Evolução (Onda 2) | Implementar monitor.py com alerta de faixa | US7 | — |
+| 6.1 | Evolução (Onda 2) | Implementar monitoramento com alerta de faixa | US7 | — |
 | 6.2 | Evolução (Onda 2) | Estimar impacto na meta por célula | US8 | — |
-| 6.3 | Evolução (Onda 2) | Calcular PSI e sinalizar drift | US9 | — |
+| 6.3 | Evolução (Onda 2) | Implementar monitoramento, calcular PSI e sinalizar drift | US9 | — |
 | 6.4 | Evolução (Onda 2) | Gerar relatório semanal em PDF | US10 | — |
 
 ## Estimativas (story points)

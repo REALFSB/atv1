@@ -48,7 +48,11 @@ def test_export_js_for_dashboard(model, today, tmp_path):  # integração com eq
     import json
     from src.serve import export_risk_js
     ranked = predict_risk(today, model, with_factors=True)
-    path = export_risk_js(ranked, str(tmp_path / "r.js"), metrics_path=str(tmp_path / "x.json"))
+    path = export_risk_js(
+        ranked,
+        str(tmp_path / "nested" / "r.js"),
+        metrics_path=str(tmp_path / "x.json"),
+    )
     txt = open(path, encoding="utf-8").read()
     assert txt.startswith("window.RISCO_DATA = ")
     data = json.loads(txt[len("window.RISCO_DATA = "):].rstrip(";\n"))

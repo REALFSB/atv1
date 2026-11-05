@@ -258,7 +258,7 @@
           </div>
         </div>
 
-        <!-- Radar de Risco de Ausência (saída do modelo: src/serve.py -> risco-data.js) -->
+        <!-- Radar de Risco de Ausência (saída do modelo: src/serving/risk.py -> risco-data.js) -->
         <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden" id="radar-risco">
           <div class="p-5 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
@@ -277,7 +277,7 @@
               </button>
             </div>
           </div>
-          <div id="risco-vazio" class="hidden p-5 text-xs text-slate-500">Sem dados de risco. Rode <code>python -m src.train</code> e <code>python -m src.serve</code> para gerar o arquivo <code>risco-data.js</code>.</div>
+          <div id="risco-vazio" class="hidden p-5 text-xs text-slate-500">Sem dados de risco. Rode <code>python -m src.ml.train</code> e <code>python -m src.serving.risk</code> para gerar o arquivo <code>paineis/risco-data.js</code>.</div>
           <div id="risco-corpo">
             <div class="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-100 border-b border-slate-100 text-xs">
               <div class="bg-white p-4"><p class="text-slate-400 uppercase tracking-wider font-medium">Risco Alto</p><p id="risco-alta" class="text-xl font-bold text-red-600">-</p></div>
@@ -490,7 +490,7 @@
 
   <script src="risco-data.js"></script>
   <script>
-    // Radar de Risco de Ausência: lê window.RISCO_DATA (gerado por src/serve.py)
+    // Radar de Risco de Ausência: lê window.RISCO_DATA (gerado por src/serving/risk.py)
     (function () {
       const D = window.RISCO_DATA;
       const $ = (id) => document.getElementById(id);

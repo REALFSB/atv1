@@ -23,7 +23,7 @@
 
 ## Onda 1 (MVP · Sprint 1)
 
-### US1 · Previsão de risco de ausência · 5 pts · `train.py, serve.py`
+### US1 · Previsão de risco de ausência · 5 pts · `src/ml/train.py, src/serving/risk.py`
 **Como** Guilherme, **quero** uma lista de operadores ordenada por risco de ausência no próximo turno, **para** remanejar pessoas antes de a escala furar e proteger as metas do dia.
 
 - Canvas: F1 · Tipo: funcional
@@ -31,7 +31,7 @@
 - **Quando** abro Equipes & Escalas
 - **Então** a lista aparece ordenada do maior para o menor risco, gerada em até 5 s
 
-### US2 · Previsão de risco de ausência · 8 pts · `features.py, train.py`
+### US2 · Previsão de risco de ausência · 8 pts · `src/ml/features.py, src/ml/train.py`
 **Como** Guilherme, **quero** que o modelo identifique a maior parte das ausências reais, **para** confiar na lista e agir sobre ela.
 
 - Canvas: F1 · Tipo: métrica do modelo
@@ -39,7 +39,7 @@
 - **Quando** é avaliado nos últimos 25% dos dias (teste temporal)
 - **Então** recall ≥ 0,60 e ROC-AUC ≥ 0,70, registrados em metrics.json
 
-### US3 · Dados confiáveis e governança · 3 pts · `ingest.py`
+### US3 · Dados confiáveis e governança · 3 pts · `src/data/ingest.py`
 **Como** Guilherme, **quero** que dados incompletos ou inválidos sejam barrados antes do treino, **para** evitar decisões baseadas em dado ruim.
 
 - Canvas: F5 · Tipo: dados
@@ -47,7 +47,7 @@
 - **Quando** o pipeline executa a ingestão
 - **Então** o processo é interrompido com erro que lista cada coluna e seu % de nulos
 
-### US4 · Dados confiáveis e governança · 3 pts · `ingest.py`
+### US4 · Dados confiáveis e governança · 3 pts · `src/data/ingest.py`
 **Como** Guilherme, **quero** que o sistema não use identificadores diretos nem dados de saúde dos operadores, **para** cumprir a LGPD e preservar a confiança do time.
 
 - Canvas: F5 · Tipo: dados / LGPD
@@ -55,7 +55,7 @@
 - **Quando** a ingestão é executada
 - **Então** o ID sai como hash com sal e as colunas de saúde são descartadas
 
-### US5 · Ação e comunicação com a operação · 2 pts · `serve.py`
+### US5 · Ação e comunicação com a operação · 2 pts · `src/serving/risk.py`
 **Como** Guilherme, **quero** exportar a lista de risco em CSV, **para** compartilhar com os líderes de célula.
 
 - Canvas: F2 · Tipo: funcional
@@ -65,7 +65,7 @@
 
 ## Onda 2 (Sprint 2+)
 
-### US6 · Previsão de risco de ausência · 3 pts · `serve.py`
+### US6 · Previsão de risco de ausência · 3 pts · `src/serving/risk.py`
 **Como** Líder de célula, **quero** ver a faixa (Alta/Média/Baixa) e os 3 principais fatores de cada risco, **para** explicar a decisão ao operador e agir na causa.
 
 - Canvas: F1 · Tipo: explicabilidade
@@ -73,7 +73,7 @@
 - **Quando** consulto o detalhe
 - **Então** vejo a faixa e exatamente 3 fatores que mais elevam o risco
 
-### US7 · Ação e comunicação com a operação · 5 pts · `monitor.py (novo)`
+### US7 · Ação e comunicação com a operação · 5 pts · `src/monitoring/ (futuro)`
 **Como** Guilherme, **quero** ser alertado quando um operador mudar de faixa de risco, **para** agir a tempo, sem olhar a lista toda dia.
 
 - Canvas: F3 · Tipo: funcional
@@ -81,7 +81,7 @@
 - **Quando** um operador passa de Média para Alta
 - **Então** o Dashboard exibe alerta com nome da célula e a mudança
 
-### US8 · Ação e comunicação com a operação · 8 pts · `serve.py, monitor.py`
+### US8 · Ação e comunicação com a operação · 8 pts · `src/serving/risk.py, src/monitoring (futuro)`
 **Como** Guilherme, **quero** ver o impacto estimado das ausências previstas na meta de cada célula, **para** decidir onde remanejar primeiro.
 
 - Canvas: F4 · Tipo: funcional
@@ -89,7 +89,7 @@
 - **Quando** abro Gestão de Metas
 - **Então** vejo a perda esperada de unidades por célula, ordenada
 
-### US9 · Dados confiáveis e governança · 5 pts · `monitor.py (novo)`
+### US9 · Dados confiáveis e governança · 5 pts · `src/monitoring/ (futuro)`
 **Como** Guilherme, **quero** ser avisado quando os dados novos se afastarem dos dados de treino, **para** saber quando retreinar o modelo.
 
 - Canvas: F6 · Tipo: dados / drift
@@ -97,7 +97,7 @@
 - **Quando** o PSI de qualquer feature passa de 0,2
 - **Então** o painel sinaliza drift e sugere retreino
 
-### US10 · Ação e comunicação com a operação · 3 pts · `serve.py`
+### US10 · Ação e comunicação com a operação · 3 pts · `src/serving/risk.py`
 **Como** Guilherme, **quero** receber um relatório semanal de risco por célula em PDF, **para** levar o tema às reuniões de operação.
 
 - Canvas: F2 · Tipo: funcional
