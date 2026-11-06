@@ -81,12 +81,13 @@ def save_artifacts(result: TrainResult, out_dir: str = "artifacts") -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Treina o modelo de risco de ausência")
-    ap.add_argument("--source", default="synthetic", choices=["synthetic", "csv"])
+    ap.add_argument("--source", default="synthetic", choices=["synthetic", "csv", "firestore"])
     ap.add_argument("--path")
+    ap.add_argument("--since", help="AAAA-MM-DD: com --source firestore, lê só dados a partir desta data")
     ap.add_argument("--model", default="logistic", choices=list(MODEL_REGISTRY))
     ap.add_argument("--out", default="artifacts")
     a = ap.parse_args()
-    result = train_model(make_source(a.source, a.path), a.model)
+    result = train_model(make_source(a.source, a.path, a.since), a.model)
     print(json.dumps(result.metrics, indent=2, ensure_ascii=False))
     print("Modelo salvo em:", save_artifacts(result, a.out))
 

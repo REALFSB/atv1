@@ -89,18 +89,23 @@ def export_risk_js(ranked: pd.DataFrame, path: str, source: str = "synthetic",
 def main() -> None:
     ap = argparse.ArgumentParser(description="Gera a lista de risco de ausência do último dia")
     ap.add_argument("--model", default="artifacts/model.joblib")
-    ap.add_argument("--source", default="synthetic", choices=["synthetic", "csv"])
+    ap.add_argument("--source", default="synthetic", choices=["synthetic", "csv", "firestore"])
     ap.add_argument("--path")
+    ap.add_argument("--since", help="AAAA-MM-DD: com --source firestore, lê só dados a partir desta data")
+    ap.add_argument("--firestore", action="store_true", help="grava o ranking também no Firestore")
     ap.add_argument("--out", default="artifacts/ranking.csv")
     ap.add_argument("--web-out", default="paineis/risco-data.js", help="arquivo lido pelo painel de equipes")
     a = ap.parse_args()
-    df = load_operations(make_source(a.source, a.path))
+    df = load_operations(make_source(a.source, a.path, a.since))
     latest = df[df["date"] == df["date"].max()]
     ranked = predict_risk(latest, load_model(a.model), with_factors=True)
     print(ranked.head(10).to_string(index=False))
     os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
     print("CSV:", export_risk_csv(ranked, a.out))
     print("Painel:", export_risk_js(ranked, a.web_out, a.source))
+    if a.firestore:
+        from .firebase_export import export_risk_firestore  # import tardio
+        print("Firestore:", export_risk_firestore(ranked, a.source, ref_date=latest["date"].max()))
 
 
 if __name__ == "__main__":
