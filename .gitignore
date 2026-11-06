@@ -6,4 +6,9 @@ data/*
 !data/.gitkeep
 artifacts/
 .env
-secrests/
+secrets/
+
+# Credenciais do Firebase: NUNCA versionar
+serviceAccount*.json
+*-firebase-adminsdk-*.json
+.env.*

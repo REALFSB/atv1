@@ -85,13 +85,16 @@ class SyntheticSource(DataSource):
         return df.drop(columns="propensity")[REQUIRED_COLUMNS]
 
 
-def make_source(kind: str, path: str | None = None) -> DataSource:
+def make_source(kind: str, path: str | None = None, since: str | None = None) -> DataSource:
     """Fábrica usada pelas CLIs: trocar a fonte não exige mudar train/serve."""
     if kind == "synthetic":
         return SyntheticSource()
     if kind == "csv" and path:
         return CsvSource(path)
-    raise ValueError("Use --source synthetic ou --source csv --path <arquivo>")
+    if kind == "firestore":
+        from .firebase import FirestoreSource  # import tardio: só exige firebase-admin se usado
+        return FirestoreSource(since=since)
+    raise ValueError("Use --source synthetic, --source csv --path <arquivo> ou --source firestore")
 
 
 def validate(df: pd.DataFrame, max_null_rate: float = MAX_NULL_RATE) -> pd.DataFrame:
@@ -124,4 +127,6 @@ def load_operations(source: DataSource, salt: str | None = None) -> pd.DataFrame
     df = source.load()
     df = df.drop(columns=[c for c in SENSITIVE_COLUMNS if c in df.columns])
     df = validate(df).dropna(subset=REQUIRED_COLUMNS).reset_index(drop=True)
+    if getattr(source, "already_pseudonymized", False):
+        return df  # ex.: Firestore já guarda IDs com hash; não aplicar o hash duas vezes
     return pseudonymize(df, salt)
