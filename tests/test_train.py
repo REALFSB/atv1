@@ -4,13 +4,20 @@ import pandas as pd
 from sklearn.dummy import DummyClassifier
 
 from src.ingest import DataSource, SyntheticSource
-from src.train import (MODEL_REGISTRY, meets_targets, register_model, save_artifacts,
-                       time_split, train_model)
+from src.train import (
+    MODEL_REGISTRY,
+    meets_targets,
+    register_model,
+    save_artifacts,
+    time_split,
+    train_model,
+)
 
 
 def test_metrics_meet_targets_on_synthetic():  # US2 (métrica do modelo)
     r = train_model(SyntheticSource())
-    assert r.metrics["meets_targets"] and r.metrics["recall"] >= 0.60 and r.metrics["roc_auc"] >= 0.70
+    assert r.metrics["meets_targets"]
+    assert r.metrics["recall"] >= 0.60 and r.metrics["roc_auc"] >= 0.70
 
 
 def test_time_split_has_no_leakage(ops):

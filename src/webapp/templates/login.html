@@ -1,0 +1,54 @@
+{% extends "_auth_layout.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}Entrar{% endblock %}
+{% block card %}
+<header class="auth__head">
+  <h1>Entrar</h1>
+  <p>Acesse o painel de operações com seu e-mail corporativo.</p>
+</header>
+
+{% if request.args.get('saiu') %}
+<div class="alert alert--ok" role="status">{{ icon("check", "icon icon--sm") }} Você saiu da sua conta.</div>
+{% endif %}
+{% if errors.form %}
+<div class="alert alert--error" role="alert" id="form-error">{{ icon("alert", "icon icon--sm") }} {{ errors.form }}</div>
+{% endif %}
+
+<form method="post" action="{{ url_for('auth.login') }}" class="form" novalidate data-validate>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  {% if next_url %}<input type="hidden" name="next" value="{{ next_url }}">{% endif %}
+
+  <div class="field{% if errors.email %} field--invalid{% endif %}">
+    <label for="email">E-mail</label>
+    <div class="input">
+      {{ icon("mail", "icon input__icon") }}
+      <input id="email" name="email" type="email" autocomplete="username" inputmode="email"
+             placeholder="voce@empresa.com.br" value="{{ email }}" required
+             aria-describedby="email-error"{% if errors.email %} aria-invalid="true"{% endif %}
+             {% if not email %}autofocus{% endif %}>
+    </div>
+    <p class="field__error" id="email-error" data-error-for="email">{{ errors.email or "" }}</p>
+  </div>
+
+  <div class="field{% if errors.password %} field--invalid{% endif %}">
+    <label for="password">Senha</label>
+    <div class="input">
+      {{ icon("lock", "icon input__icon") }}
+      <input id="password" name="password" type="password" autocomplete="current-password"
+             placeholder="Sua senha" required aria-describedby="password-error"
+             {% if errors.password %}aria-invalid="true"{% endif %}{% if email %} autofocus{% endif %}>
+      <button type="button" class="input__toggle" data-toggle-password="password"
+              aria-label="Mostrar senha" aria-pressed="false">
+        <span class="when-hidden">{{ icon("eye") }}</span><span class="when-shown">{{ icon("eye-off") }}</span>
+      </button>
+    </div>
+    <p class="field__error" id="password-error" data-error-for="password">{{ errors.password or "" }}</p>
+  </div>
+
+  <button type="submit" class="btn btn--primary btn--block">Entrar {{ icon("arrow", "icon icon--sm") }}</button>
+</form>
+
+{% if allow_signup %}
+<p class="auth__alt">Ainda não tem conta? <a href="{{ url_for('auth.register') }}">Criar conta</a></p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,334 @@
+{
+  "generated_at": "2026-11-11 22:00",
+  "tests": {
+    "total": 135,
+    "passed": 135,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_s": 10.82,
+    "by_file": {
+      "test_auth": 42,
+      "test_employee_model": 19,
+      "test_features": 2,
+      "test_ingest": 6,
+      "test_repo": 9,
+      "test_serve": 5,
+      "test_smoke": 3,
+      "test_train": 6,
+      "test_validate": 43
+    },
+    "coverage": 0.9095,
+    "coverage_lines": {
+      "covered": 869,
+      "statements": 939
+    },
+    "coverage_branches": {
+      "covered": 136,
+      "total": 166
+    },
+    "coverage_by_file": {
+      "src/__init__.py": 1.0,
+      "src/dashboard.py": 0.8548,
+      "src/data/__init__.py": 1.0,
+      "src/data/employees.py": 1.0,
+      "src/data/ingest.py": 0.8442,
+      "src/features.py": 1.0,
+      "src/ingest.py": 1.0,
+      "src/ml/__init__.py": 1.0,
+      "src/ml/features.py": 1.0,
+      "src/ml/kaggle_risk.py": 1.0,
+      "src/ml/train.py": 0.8421,
+      "src/serve.py": 1.0,
+      "src/serving/__init__.py": 1.0,
+      "src/serving/risk.py": 0.7403,
+      "src/train.py": 1.0,
+      "src/validate.py": 0.9684,
+      "src/webapp/__init__.py": 0.7714,
+      "src/webapp/__main__.py": 0.0,
+      "src/webapp/auth.py": 0.9167,
+      "src/webapp/db.py": 0.9828,
+      "src/webapp/indicators.py": 0.8387,
+      "src/webapp/security.py": 1.0,
+      "src/webapp/views.py": 0.898
+    }
+  },
+  "lint": {
+    "findings": 0
+  },
+  "quality_sample": {
+    "rules_total": 6,
+    "rules_approved": 0,
+    "rules_failed": 6,
+    "checks_evaluated": 180,
+    "checks_passed": 172,
+    "overall_conformity": 0.9555555555555556,
+    "critical_failures": [
+      "QC01",
+      "QC02"
+    ],
+    "other_failures": [
+      "QC03",
+      "QC04",
+      "QC05",
+      "QC06"
+    ],
+    "verdict": "BLOQUEADA",
+    "worst_rule": "QC01",
+    "rows": 30,
+    "dataset": "data/sample_data.csv"
+  },
+  "quality_full_base": {
+    "rules_total": 6,
+    "rules_approved": 5,
+    "rules_failed": 1,
+    "checks_evaluated": 600000,
+    "checks_passed": 596216,
+    "overall_conformity": 0.9936933333333333,
+    "critical_failures": [],
+    "other_failures": [
+      "QC06"
+    ],
+    "verdict": "LIBERADA COM RESSALVAS",
+    "worst_rule": "QC06",
+    "rows": 100000,
+    "dataset": "data/raw/Extended_Employee_Performance_and_Productivity_Data_2_otimizado.csv"
+  },
+  "quality_full_rules": [
+    {
+      "id": "QC01",
+      "name": "Campos obrigatórios preenchidos",
+      "dimension": "Completude",
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA"
+    },
+    {
+      "id": "QC02",
+      "name": "Employee_ID único",
+      "dimension": "Unicidade",
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA"
+    },
+    {
+      "id": "QC03",
+      "name": "Categorias no domínio permitido",
+      "dimension": "Validade",
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA"
+    },
+    {
+      "id": "QC04",
+      "name": "Valores numéricos na faixa de negócio",
+      "dimension": "Validade",
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA"
+    },
+    {
+      "id": "QC05",
+      "name": "Tempo de casa coerente com a admissão",
+      "dimension": "Consistência",
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA"
+    },
+    {
+      "id": "QC06",
+      "name": "Admissão com maioridade",
+      "dimension": "Consistência",
+      "evaluated": 100000,
+      "passed": 96216,
+      "failed": 3784,
+      "conformity": 0.96216,
+      "status": "REPROVADA"
+    }
+  ],
+  "kanban": {
+    "columns": {
+      "A fazer": 2,
+      "Em andamento": 2,
+      "Em revisão": 8,
+      "Feito": 0
+    },
+    "points": {
+      "A fazer": 10,
+      "Em andamento": 11,
+      "Em revisão": 34,
+      "Feito": 0
+    },
+    "total_stories": 12,
+    "sprint_points": 31,
+    "done_points": 0,
+    "review_points": 31,
+    "stories": [
+      {
+        "id": "US1",
+        "title": "Lista ranqueada por risco",
+        "points": 5,
+        "sprint": "1",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US2",
+        "title": "Modelo com recall/AUC mínimos",
+        "points": 8,
+        "sprint": "1",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US3",
+        "title": "Barrar dados incompletos",
+        "points": 3,
+        "sprint": "1",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US4",
+        "title": "Proteção LGPD",
+        "points": 3,
+        "sprint": "1",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US5",
+        "title": "Exportar CSV",
+        "points": 2,
+        "sprint": "1",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US11",
+        "title": "Regras de qualidade de dados",
+        "points": 5,
+        "sprint": "1 (adicionada)",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US12",
+        "title": "Login e rotas protegidas",
+        "points": 5,
+        "sprint": "1 (adicionada)",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US6",
+        "title": "Fatores de risco por operador",
+        "points": 3,
+        "sprint": "Onda 2 (já implementada)",
+        "column": "Em revisão"
+      },
+      {
+        "id": "US8",
+        "title": "Impacto na meta da célula",
+        "points": 8,
+        "sprint": "Onda 2",
+        "column": "Em andamento"
+      },
+      {
+        "id": "US10",
+        "title": "Relatório semanal em PDF",
+        "points": 3,
+        "sprint": "Onda 2",
+        "column": "Em andamento"
+      },
+      {
+        "id": "US7",
+        "title": "Alerta de mudança de faixa",
+        "points": 5,
+        "sprint": "Onda 2",
+        "column": "A fazer"
+      },
+      {
+        "id": "US9",
+        "title": "Drift (PSI > 0,2)",
+        "points": 5,
+        "sprint": "Onda 2",
+        "column": "A fazer"
+      }
+    ]
+  },
+  "model": {
+    "model": "logistic",
+    "target": "Sick_Days >= 11",
+    "split": "holdout estratificado 25% (seed 42)",
+    "roc_auc": 0.9142018020709137,
+    "recall": 0.844050381173351,
+    "precision": 0.6082646602173654,
+    "precision_top10pct": 0.8877338877338877,
+    "positive_rate_test": 0.25085224910617776,
+    "n_train": 72162,
+    "n_test": 24054,
+    "quarantined_qc06": 3784,
+    "meets_targets": true,
+    "dataset": "Extended_Employee_Performance_and_Productivity_Data_2_otimizado.csv"
+  },
+  "maturity": [
+    {
+      "area": "Gestão de Requisitos",
+      "ratings": [
+        "F",
+        "L",
+        "P"
+      ],
+      "summary": "Histórias testáveis e rastreáveis; mudança de escopo sem controle"
+    },
+    {
+      "area": "Planejamento",
+      "ratings": [
+        "F",
+        "L",
+        "P"
+      ],
+      "summary": "Estimativa e capacidade existem; sem comparação planejado × realizado anterior"
+    },
+    {
+      "area": "Gestão de Configuração",
+      "ratings": [
+        "N",
+        "P",
+        "L"
+      ],
+      "summary": "Sem histórico Git verificável; estratégia só documentada"
+    },
+    {
+      "area": "Garantia da Qualidade",
+      "ratings": [
+        "F",
+        "L",
+        "N"
+      ],
+      "summary": "Testes e lint fortes; nenhuma revisão por par independente"
+    },
+    {
+      "area": "Medição e Análise",
+      "ratings": [
+        "F",
+        "L",
+        "P"
+      ],
+      "summary": "Métricas automáticas e reproduzíveis; só um ponto de medição"
+    },
+    {
+      "area": "Gestão de Riscos",
+      "ratings": [
+        "F",
+        "L",
+        "L"
+      ],
+      "summary": "Riscos reavaliados com registro; R1 tratado, mas surgiu R7 (dado sem proveniência)"
+    }
+  ]
+}

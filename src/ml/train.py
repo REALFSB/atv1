@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import joblib
 import pandas as pd
@@ -16,8 +16,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, roc_auc_score
 from sklearn.pipeline import Pipeline
 
-from .features import FEATURE_COLUMNS, add_features, build_preprocessor
 from ..data.ingest import DataSource, load_operations, make_source
+from .features import FEATURE_COLUMNS, add_features, build_preprocessor
 
 # Metas de ML do backlog (US2 / RNF1)
 TARGET_RECALL = 0.60
@@ -81,13 +81,12 @@ def save_artifacts(result: TrainResult, out_dir: str = "artifacts") -> str:
 
 def main() -> None:
     ap = argparse.ArgumentParser(description="Treina o modelo de risco de ausência")
-    ap.add_argument("--source", default="synthetic", choices=["synthetic", "csv", "firestore"])
+    ap.add_argument("--source", default="synthetic", choices=["synthetic", "csv"])
     ap.add_argument("--path")
-    ap.add_argument("--since", help="AAAA-MM-DD: com --source firestore, lê só dados a partir desta data")
     ap.add_argument("--model", default="logistic", choices=list(MODEL_REGISTRY))
     ap.add_argument("--out", default="artifacts")
     a = ap.parse_args()
-    result = train_model(make_source(a.source, a.path, a.since), a.model)
+    result = train_model(make_source(a.source, a.path), a.model)
     print(json.dumps(result.metrics, indent=2, ensure_ascii=False))
     print("Modelo salvo em:", save_artifacts(result, a.out))
 

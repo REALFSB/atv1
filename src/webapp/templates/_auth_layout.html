@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block body_class %}auth-page{% endblock %}
+{% block body %}
+<main class="auth">
+  <aside class="auth__brand" aria-label="Sobre o DataTrack">
+    <a class="brand brand--light" href="{{ url_for('auth.login') }}">
+      <span class="brand__mark">{{ icon("activity") }}</span>
+      <span>Data<strong>Track</strong></span>
+    </a>
+    <div class="auth__pitch">
+      <h2>Antecipe ausências antes que a escala fure.</h2>
+      <p>Radar de absenteísmo com ranking de risco por operador, dados validados e pseudonimizados.</p>
+      <ul class="auth__points">
+        <li>{{ icon("users", "icon icon--sm") }} Ranking de risco por operador e setor</li>
+        <li>{{ icon("database", "icon icon--sm") }} 6 regras de qualidade antes de cada uso</li>
+        <li>{{ icon("shield", "icon icon--sm") }} IDs com hash e sal, sem dados de saúde (LGPD)</li>
+      </ul>
+    </div>
+    <p class="auth__foot">Projeto Integrador · CCD610 · uso acadêmico</p>
+  </aside>
+
+  <section class="auth__panel">
+    <div class="auth__card">
+      {% block card %}{% endblock %}
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -1,9 +1,16 @@
 import numpy as np
-import pandas as pd
 import pytest
 
-from src.ingest import (REQUIRED_COLUMNS, CsvSource, DataQualityError, DataSource,
-                        SyntheticSource, load_operations, pseudonymize, validate)
+from src.ingest import (
+    REQUIRED_COLUMNS,
+    CsvSource,
+    DataQualityError,
+    DataSource,
+    SyntheticSource,
+    load_operations,
+    pseudonymize,
+    validate,
+)
 
 
 def test_synthetic_has_required_schema():

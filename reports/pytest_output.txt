@@ -1,0 +1,35 @@
+........................................................................ [ 53%]
+...............................................................          [100%]
+================================ tests coverage ================================
+_______________ coverage: platform linux, python 3.13.18-final-0 _______________
+
+Name                       Stmts   Miss Branch BrPart  Cover   Missing
+----------------------------------------------------------------------
+src/__init__.py                0      0      0      0 100.0%
+src/dashboard.py              56      9      6      0  85.5%   100-108
+src/data/__init__.py           0      0      0      0 100.0%
+src/data/employees.py         26      0      2      0 100.0%
+src/data/ingest.py            67      7     10      1  84.4%   37, 90-94, 108
+src/features.py                2      0      0      0 100.0%
+src/ingest.py                  2      0      0      0 100.0%
+src/ml/__init__.py             0      0      0      0 100.0%
+src/ml/features.py            19      0      0      0 100.0%
+src/ml/kaggle_risk.py         85      0      2      0 100.0%
+src/ml/train.py               57      9      0      0  84.2%   83-91
+src/serve.py                   2      0      0      0 100.0%
+src/serving/__init__.py        0      0      0      0 100.0%
+src/serving/risk.py           69     17      8      3  74.0%   22->exit, 53, 74-75, 91-107
+src/train.py                   2      0      0      0 100.0%
+src/validate.py              207      2     46      6  96.8%   114->113, 117->116, 119->122, 122->124, 275->277, 402-404
+src/webapp/__init__.py        62     12      8      2  77.1%   35-37, 52->55, 87-88, 96-103
+src/webapp/__main__.py         2      2      0      0   0.0%   2-4
+src/webapp/auth.py           110      6     46      7  91.7%   51, 59->exit, 67, 114, 127, 129, 131
+src/webapp/db.py              50      0      8      1  98.3%   42->45
+src/webapp/indicators.py      23      3      8      2  83.9%   16-17, 22, 54->60
+src/webapp/security.py        55      0     16      0 100.0%
+src/webapp/views.py           43      3      6      2  89.8%   35, 68-69
+----------------------------------------------------------------------
+TOTAL                        939     70    166     24  91.0%
+Coverage JSON written to file /home/claude/datatrack/reports/coverage.json
+Required test coverage of 80.0% reached. Total coverage: 90.95%
+135 passed in 10.85s
