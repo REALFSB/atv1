@@ -1,0 +1,15 @@
+{
+  "model": "logistic",
+  "target": "Sick_Days >= 11",
+  "split": "holdout estratificado 25% (seed 42)",
+  "roc_auc": 0.9142018020709137,
+  "recall": 0.844050381173351,
+  "precision": 0.6082646602173654,
+  "precision_top10pct": 0.8877338877338877,
+  "positive_rate_test": 0.25085224910617776,
+  "n_train": 72162,
+  "n_test": 24054,
+  "quarantined_qc06": 3784,
+  "meets_targets": true,
+  "dataset": "Extended_Employee_Performance_and_Productivity_Data_2_otimizado.csv"
+}

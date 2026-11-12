@@ -5,8 +5,8 @@ from __future__ import annotations
 import argparse
 import json
 import os
+from collections.abc import Callable
 from dataclasses import dataclass
-from typing import Callable
 
 import joblib
 import pandas as pd
@@ -16,8 +16,8 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import precision_score, recall_score, roc_auc_score
 from sklearn.pipeline import Pipeline
 
-from .features import FEATURE_COLUMNS, add_features, build_preprocessor
 from ..data.ingest import DataSource, load_operations, make_source
+from .features import FEATURE_COLUMNS, add_features, build_preprocessor
 
 # Metas de ML do backlog (US2 / RNF1)
 TARGET_RECALL = 0.60

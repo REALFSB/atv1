@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}Visão geral{% endblock %}
+{% block body_class %}app-page{% endblock %}
+{% block body %}
+<header class="topbar">
+  <div class="topbar__inner">
+    <a class="brand" href="{{ url_for('views.dashboard') }}">
+      <span class="brand__mark">{{ icon("activity") }}</span>
+      <span>Data<strong>Track</strong></span>
+    </a>
+    <nav class="topnav" aria-label="Navegação principal">
+      <a href="{{ url_for('views.dashboard') }}" aria-current="page">Visão geral</a>
+      {% for f in features %}
+      <a href="{{ url_for('views.legacy_panel', filename=f.href.split('/')[1]) }}">{{ f.title }}</a>
+      {% endfor %}
+    </nav>
+    <div class="user">
+      <span class="user__avatar" aria-hidden="true">{{ g.user.first_name[:1]|upper }}</span>
+      <span class="user__name">{{ g.user.name }}</span>
+      <form method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button type="submit" class="btn btn--ghost btn--sm">{{ icon("logout", "icon icon--sm") }}<span>Sair</span></button>
+      </form>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+  <section class="hello">
+    <div>
+      <h1>{{ greeting }}, {{ g.user.first_name }}.</h1>
+      <p>Resumo do DataTrack: qualidade dos dados, testes e andamento da Sprint 1.</p>
+    </div>
+    {% if metrics %}
+    <p class="hello__meta">Indicadores gerados em {{ metrics.generated_at }} por <code>scripts/collect_metrics.py</code></p>
+    {% endif %}
+  </section>
+
+  {% if not metrics %}
+  <div class="alert alert--warn" role="status">{{ icon("alert", "icon icon--sm") }}
+    Indicadores ainda não gerados. Rode <code>python scripts/collect_metrics.py --run</code> e recarregue.</div>
+  {% else %}
+  <section class="kpis" aria-label="Indicadores principais">
+    {% for c in cards %}
+    <article class="kpi kpi--{{ c.tone }}">
+      <p class="kpi__label">{{ c.label }}</p>
+      <p class="kpi__value">{{ c.value }}</p>
+      <p class="kpi__hint">{{ c.hint }}</p>
+      <p class="kpi__source">fonte: {{ c.source }}</p>
+    </article>
+    {% endfor %}
+  </section>
+  {% endif %}
+
+  <div class="grid">
+    <section class="panel">
+      <header class="panel__head">
+        <h2>Funcionalidades</h2>
+        <p>Painéis de operação, acessíveis só com login.</p>
+      </header>
+      <ul class="features">
+        {% for f in features %}
+        <li>
+          <a class="feature" href="{{ url_for('views.legacy_panel', filename=f.href.split('/')[1]) }}">
+            <span class="feature__icon">{{ icon(f.icon) }}</span>
+            <span class="feature__body"><strong>{{ f.title }}</strong><span>{{ f.text }}</span></span>
+            {{ icon("arrow", "icon icon--sm feature__go") }}
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    {% if metrics and metrics.quality_full_rules %}
+    <section class="panel">
+      <header class="panel__head">
+        <h2>Qualidade dos dados · base Kaggle</h2>
+        <p>{{ "{:,}".format(metrics.quality_full_base.rows or 0).replace(",", ".") }} registros · status
+          <strong>{{ metrics.quality_full_base.verdict }}</strong></p>
+      </header>
+      <table class="rules">
+        <thead><tr><th scope="col">Regra</th><th scope="col">Conformidade</th><th scope="col" class="num">Reprov.</th></tr></thead>
+        <tbody>
+        {% for r in metrics.quality_full_rules %}
+        <tr>
+          <td><span class="tag">{{ r.id }}</span> {{ r.dimension }}<span class="rules__name">{{ r.name }}</span></td>
+          <td>
+            <svg class="bar" viewBox="0 0 100 8" preserveAspectRatio="none" role="img"
+                 aria-label="{{ pct(r.conformity, 2) }}">
+              <rect width="100" height="8" rx="4" class="bar__track"/>
+              <rect width="{{ ((r.conformity or 0) * 100)|round(2) }}" height="8" rx="4"
+                    class="bar__fill {{ 'bar__fill--ok' if r.status == 'APROVADA' else 'bar__fill--bad' }}"/>
+            </svg>
+            <span class="rules__pct">{{ pct(r.conformity, 2) }}</span>
+          </td>
+          <td class="num">{{ "{:,}".format(r.failed).replace(",", ".") }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% endif %}
+
+    {% if metrics and metrics.kanban %}
+    <section class="panel">
+      <header class="panel__head">
+        <h2>Kanban · Sprint 1</h2>
+        <p>{{ metrics.kanban.total_stories }} histórias no quadro</p>
+      </header>
+      {% set cols = metrics.kanban.columns %}
+      {% set total = metrics.kanban.total_stories or 1 %}
+      <svg class="stack" viewBox="0 0 100 10" preserveAspectRatio="none" role="img" aria-label="Distribuição das histórias por coluna">
+        {% set ns = namespace(x=0) %}
+        {% for name, n in cols.items() %}
+          {% set w = n * 100 / total %}
+          <rect x="{{ ns.x|round(3) }}" width="{{ w|round(3) }}" height="10" class="stack__{{ loop.index }}"/>
+          {% set ns.x = ns.x + w %}
+        {% endfor %}
+      </svg>
+      <ul class="legend">
+        {% for name, n in cols.items() %}
+        <li><span class="legend__dot stack__{{ loop.index }}"></span>{{ name }} <strong>{{ n }}</strong></li>
+        {% endfor %}
+      </ul>
+      <ul class="cards">
+        {% for s in metrics.kanban.stories or [] %}
+        <li><span class="tag">{{ s.id }}</span><span class="cards__title">{{ s.title }}</span>
+          <span class="cards__col">{{ s.column }} · {{ s.points }} pts</span></li>
+        {% endfor %}
+      </ul>
+      <p class="panel__note">Nada em Feito: falta revisão por par comprovada (DoD item 6).</p>
+    </section>
+    {% endif %}
+
+    {% if metrics and metrics.maturity %}
+    <section class="panel">
+      <header class="panel__head">
+        <h2>Maturidade do processo</h2>
+        <p>Autoavaliação CMMI/MPS.BR (escala N/P/L/F)</p>
+      </header>
+      <ul class="maturity">
+        {% for a in metrics.maturity %}
+        <li><span>{{ a.area }}</span><span class="ratings">{% for r in a.ratings %}<span class="rating rating--{{ r }}">{{ r }}</span>{% endfor %}</span></li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+  </div>
+</main>
+{% endblock %}

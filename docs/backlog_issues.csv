@@ -69,3 +69,20 @@ Quando solicito o relatório em Relatórios
 Então recebo PDF com risco médio e top 5 operadores por célula
 
 Canvas: F2 | Módulo: src/serving/risk.py | Pontos: 3","onda-2,E2,funcional"
+US11: que a base passe por regras de qualidade com relatório por regra,"Como Guilherme, quero que a base passe por regras de qualidade com um relatório por regra, para saber se posso confiar nela antes de usar.
+
+Dado uma base de funcionários
+Quando rodo python -m src.validate
+Então recebo, para cada uma das 6 regras, avaliados, aprovados, reprovados, % de conformidade e status
+E as consultas SQL dão os mesmos números que o motor pandas
+
+Canvas: F5 | Módulo: src/validate.py, sql/quality_checks.sql | Pontos: 5 | Entrou durante a Sprint 1","onda-1,E3,dados / qualidade"
+US12: entrar com e-mail e senha para que só pessoas autorizadas vejam o ranking,"Como Guilherme, quero entrar com e-mail e senha, para que só pessoas autorizadas vejam o ranking de risco dos operadores.
+
+Dado credenciais válidas
+Quando entro
+Então vou para o dashboard com saudação e botão de sair
+E senha errada ou e-mail inexistente mostram a mesma mensagem
+E páginas privadas exigem login; logout encerra a sessão; senha só como hash
+
+Canvas: F2 | Módulo: src/webapp/ | Pontos: 5 | Entrou durante a Sprint 1","onda-1,E2,segurança"

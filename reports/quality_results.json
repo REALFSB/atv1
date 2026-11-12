@@ -1,0 +1,127 @@
+{
+  "dataset": "data/sample_data.csv",
+  "rows": 30,
+  "reference_date": "2024-09-04",
+  "summary": {
+    "rules_total": 6,
+    "rules_approved": 0,
+    "rules_failed": 6,
+    "checks_evaluated": 180,
+    "checks_passed": 172,
+    "overall_conformity": 0.9555555555555556,
+    "critical_failures": [
+      "QC01",
+      "QC02"
+    ],
+    "other_failures": [
+      "QC03",
+      "QC04",
+      "QC05",
+      "QC06"
+    ],
+    "verdict": "BLOQUEADA",
+    "worst_rule": "QC01"
+  },
+  "sql_parity": {
+    "QC01": true,
+    "QC02": true,
+    "QC03": true,
+    "QC04": true,
+    "QC05": true,
+    "QC06": true
+  },
+  "rules": [
+    {
+      "id": "QC01",
+      "name": "Campos obrigatórios preenchidos",
+      "dimension": "Completude",
+      "threshold": 1.0,
+      "critical": true,
+      "evaluated": 30,
+      "passed": 28,
+      "failed": 2,
+      "conformity": 0.9333333333333333,
+      "status": "REPROVADA",
+      "failed_ids": [
+        25,
+        30
+      ]
+    },
+    {
+      "id": "QC02",
+      "name": "Employee_ID único",
+      "dimension": "Unicidade",
+      "threshold": 1.0,
+      "critical": true,
+      "evaluated": 30,
+      "passed": 28,
+      "failed": 2,
+      "conformity": 0.9333333333333333,
+      "status": "REPROVADA",
+      "failed_ids": [
+        7,
+        7
+      ]
+    },
+    {
+      "id": "QC03",
+      "name": "Categorias no domínio permitido",
+      "dimension": "Validade",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 30,
+      "passed": 29,
+      "failed": 1,
+      "conformity": 0.9666666666666667,
+      "status": "REPROVADA",
+      "failed_ids": [
+        27
+      ]
+    },
+    {
+      "id": "QC04",
+      "name": "Valores numéricos na faixa de negócio",
+      "dimension": "Validade",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 30,
+      "passed": 29,
+      "failed": 1,
+      "conformity": 0.9666666666666667,
+      "status": "REPROVADA",
+      "failed_ids": [
+        28
+      ]
+    },
+    {
+      "id": "QC05",
+      "name": "Tempo de casa coerente com a admissão",
+      "dimension": "Consistência",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 30,
+      "passed": 29,
+      "failed": 1,
+      "conformity": 0.9666666666666667,
+      "status": "REPROVADA",
+      "failed_ids": [
+        29
+      ]
+    },
+    {
+      "id": "QC06",
+      "name": "Admissão com maioridade",
+      "dimension": "Consistência",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 30,
+      "passed": 29,
+      "failed": 1,
+      "conformity": 0.9666666666666667,
+      "status": "REPROVADA",
+      "failed_ids": [
+        20
+      ]
+    }
+  ]
+}

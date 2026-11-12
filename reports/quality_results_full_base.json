@@ -1,0 +1,128 @@
+{
+  "dataset": "data/raw/Extended_Employee_Performance_and_Productivity_Data_2_otimizado.csv",
+  "rows": 100000,
+  "reference_date": "2024-09-04",
+  "summary": {
+    "rules_total": 6,
+    "rules_approved": 5,
+    "rules_failed": 1,
+    "checks_evaluated": 600000,
+    "checks_passed": 596216,
+    "overall_conformity": 0.9936933333333333,
+    "critical_failures": [],
+    "other_failures": [
+      "QC06"
+    ],
+    "verdict": "LIBERADA COM RESSALVAS",
+    "worst_rule": "QC06"
+  },
+  "sql_parity": {
+    "QC01": true,
+    "QC02": true,
+    "QC03": true,
+    "QC04": true,
+    "QC05": true,
+    "QC06": true
+  },
+  "rules": [
+    {
+      "id": "QC01",
+      "name": "Campos obrigatórios preenchidos",
+      "dimension": "Completude",
+      "threshold": 1.0,
+      "critical": true,
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA",
+      "failed_ids": []
+    },
+    {
+      "id": "QC02",
+      "name": "Employee_ID único",
+      "dimension": "Unicidade",
+      "threshold": 1.0,
+      "critical": true,
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA",
+      "failed_ids": []
+    },
+    {
+      "id": "QC03",
+      "name": "Categorias no domínio permitido",
+      "dimension": "Validade",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA",
+      "failed_ids": []
+    },
+    {
+      "id": "QC04",
+      "name": "Valores numéricos na faixa de negócio",
+      "dimension": "Validade",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA",
+      "failed_ids": []
+    },
+    {
+      "id": "QC05",
+      "name": "Tempo de casa coerente com a admissão",
+      "dimension": "Consistência",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 100000,
+      "passed": 100000,
+      "failed": 0,
+      "conformity": 1.0,
+      "status": "APROVADA",
+      "failed_ids": []
+    },
+    {
+      "id": "QC06",
+      "name": "Admissão com maioridade",
+      "dimension": "Consistência",
+      "threshold": 0.99,
+      "critical": false,
+      "evaluated": 100000,
+      "passed": 96216,
+      "failed": 3784,
+      "conformity": 0.96216,
+      "status": "REPROVADA",
+      "failed_ids": [
+        20,
+        82,
+        172,
+        218,
+        227,
+        231,
+        247,
+        274,
+        294,
+        299,
+        302,
+        304,
+        309,
+        319,
+        322,
+        381,
+        390,
+        413,
+        456,
+        463
+      ]
+    }
+  ]
+}

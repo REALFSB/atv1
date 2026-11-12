@@ -1,0 +1,61 @@
+{% extends "_auth_layout.html" %}
+{% from "_macros.html" import icon %}
+{% block title %}Criar conta{% endblock %}
+{% block card %}
+<header class="auth__head">
+  <h1>Criar conta</h1>
+  <p>Cadastro para acessar o DataTrack. A senha é guardada apenas como hash.</p>
+</header>
+
+<form method="post" action="{{ url_for('auth.register') }}" class="form" novalidate data-validate>
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+  <div class="field{% if errors.name %} field--invalid{% endif %}">
+    <label for="name">Nome</label>
+    <div class="input">
+      {{ icon("user", "icon input__icon") }}
+      <input id="name" name="name" type="text" autocomplete="name" value="{{ form.name }}"
+             placeholder="Seu nome" required aria-describedby="name-error" autofocus>
+    </div>
+    <p class="field__error" id="name-error" data-error-for="name">{{ errors.name or "" }}</p>
+  </div>
+
+  <div class="field{% if errors.email %} field--invalid{% endif %}">
+    <label for="email">E-mail</label>
+    <div class="input">
+      {{ icon("mail", "icon input__icon") }}
+      <input id="email" name="email" type="email" autocomplete="email" value="{{ form.email }}"
+             placeholder="voce@empresa.com.br" required aria-describedby="email-error">
+    </div>
+    <p class="field__error" id="email-error" data-error-for="email">{{ errors.email or "" }}</p>
+  </div>
+
+  <div class="field{% if errors.password %} field--invalid{% endif %}">
+    <label for="password">Senha</label>
+    <div class="input">
+      {{ icon("lock", "icon input__icon") }}
+      <input id="password" name="password" type="password" autocomplete="new-password"
+             minlength="{{ min_password }}" placeholder="Mínimo {{ min_password }} caracteres, letras e números"
+             required aria-describedby="password-error">
+      <button type="button" class="input__toggle" data-toggle-password="password"
+              aria-label="Mostrar senha" aria-pressed="false">
+        <span class="when-hidden">{{ icon("eye") }}</span><span class="when-shown">{{ icon("eye-off") }}</span>
+      </button>
+    </div>
+    <p class="field__error" id="password-error" data-error-for="password">{{ errors.password or "" }}</p>
+  </div>
+
+  <div class="field{% if errors.confirm %} field--invalid{% endif %}">
+    <label for="confirm">Confirmar senha</label>
+    <div class="input">
+      {{ icon("lock", "icon input__icon") }}
+      <input id="confirm" name="confirm" type="password" autocomplete="new-password"
+             placeholder="Repita a senha" required data-match="password" aria-describedby="confirm-error">
+    </div>
+    <p class="field__error" id="confirm-error" data-error-for="confirm">{{ errors.confirm or "" }}</p>
+  </div>
+
+  <button type="submit" class="btn btn--primary btn--block">Criar conta {{ icon("arrow", "icon icon--sm") }}</button>
+</form>
+<p class="auth__alt">Já tem conta? <a href="{{ url_for('auth.login') }}">Entrar</a></p>
+{% endblock %}

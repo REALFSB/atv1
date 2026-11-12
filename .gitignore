@@ -1,9 +1,28 @@
 .vercel
 __pycache__/
 .pytest_cache/
+.ruff_cache/
 *.pyc
+.venv/
+venv/
+
+# Dados brutos ficam fora do Git (LGPD). A amostra fixa é a exceção.
 data/*
 !data/.gitkeep
+!data/sample_data.csv
+!data/README.md
+!data/dashboard_sources_snapshot.json
+
 artifacts/
+instance/
 .env
-secrests/
+secrets/
+
+# Saídas regeneráveis de cobertura
+.coverage
+coverage.xml
+reports/coverage_html/
+
+# Estado local do scripts/github_setup.py
+.github-setup.json
+.github-protection.json

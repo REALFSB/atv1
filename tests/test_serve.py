@@ -20,7 +20,7 @@ def today():
 
 
 def test_ranking_is_sorted_desc_with_bands(model, today):
-    """US1 – Dado dados carregados, quando gera a lista, então ordena do maior para o menor risco."""
+    """US1 – Dado dados carregados, quando gera a lista, então ordena do maior ao menor risco."""
     r = predict_risk(today, model)
     assert r["risk"].is_monotonic_decreasing and r["rank"].tolist() == list(range(1, len(r) + 1))
     assert set(r["band"]) <= {"Alta", "Média", "Baixa"}
@@ -46,6 +46,7 @@ def test_top_factors_returns_three_per_operator(model, today):  # US6
 
 def test_export_js_for_dashboard(model, today, tmp_path):  # integração com equipes.html
     import json
+
     from src.serve import export_risk_js
     ranked = predict_risk(today, model, with_factors=True)
     path = export_risk_js(
@@ -53,7 +54,8 @@ def test_export_js_for_dashboard(model, today, tmp_path):  # integração com eq
         str(tmp_path / "nested" / "r.js"),
         metrics_path=str(tmp_path / "x.json"),
     )
-    txt = open(path, encoding="utf-8").read()
+    with open(path, encoding="utf-8") as f:
+        txt = f.read()
     assert txt.startswith("window.RISCO_DATA = ")
     data = json.loads(txt[len("window.RISCO_DATA = "):].rstrip(";\n"))
     assert len(data["ranking"]) == len(ranked) and data["ranking"][0]["rank"] == 1

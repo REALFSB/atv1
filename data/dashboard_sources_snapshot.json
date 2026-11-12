@@ -1,0 +1,960 @@
+{
+ "_nota": "Agregados das bases 'HR Dashboard' (200 linhas) e 'Employee Productivity' (10 linhas), congelados a partir de paineis/dashboard-data.js gerado em 2026-10-14. Os CSVs dessas duas bases não estão no repositório; por isso src/dashboard.py recalcula apenas a base Extended e reaproveita estes números. null_counts: valores exatos quando deriváveis das contagens por métrica; education_level, team_size e promotions foram inferidos do percentual arredondado (0,2%) e têm incerteza de ±10 linhas.",
+ "frozen_from": "paineis/dashboard-data.js (generated_at 2026-10-14T00:10:02Z)",
+ "params": {
+  "jornada_padrao_h": 40,
+  "limite_absenteismo_dias": 11,
+  "faixas": {
+   "superada": 105,
+   "na_meta": 95,
+   "atencao": 85
+  },
+  "metas": [
+   {
+    "id": "prod",
+    "nome": "Índice de produtividade",
+    "curto": "produtividade",
+    "detalhe": "Desempenho 1–5 convertido para 0–100",
+    "alvo": 50.0,
+    "sentido": "max",
+    "unidade": "pts",
+    "casas": 1
+   },
+   {
+    "id": "sat",
+    "nome": "Satisfação dos funcionários",
+    "curto": "satisfação",
+    "detalhe": "Escala 1–5 (ponto médio = 3)",
+    "alvo": 3.0,
+    "sentido": "max",
+    "unidade": "/5",
+    "casas": 2
+   },
+   {
+    "id": "ot",
+    "nome": "Horas extras por funcionário",
+    "curto": "horas extras",
+    "detalhe": "Média de horas extras registradas",
+    "alvo": 15.0,
+    "sentido": "min",
+    "unidade": "h",
+    "casas": 1
+   },
+   {
+    "id": "sick",
+    "nome": "Dias de afastamento por ano",
+    "curto": "afastamento",
+    "detalhe": "Média de dias de afastamento (Sick_Days)",
+    "alvo": 7.0,
+    "sentido": "min",
+    "unidade": "dias",
+    "casas": 1
+   }
+  ]
+ },
+ "sources": {
+  "hr_dashboard": {
+   "label": "HR Dashboard",
+   "linhas": 200
+  },
+  "productivity": {
+   "label": "Employee Productivity",
+   "linhas": 10
+  }
+ },
+ "by_dept": [
+  {
+   "source": "hr_dashboard",
+   "department": "Finance",
+   "n": 41,
+   "prod": [
+    1733.0,
+    41
+   ],
+   "hours": [
+    0.0,
+    0
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    123.08,
+    41
+   ],
+   "proj": [
+    505.0,
+    41
+   ],
+   "train": [
+    0.0,
+    0
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    274341.917,
+    41
+   ],
+   "tenure": [
+    4943.0,
+    41
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "hr_dashboard",
+   "department": "HR",
+   "n": 32,
+   "prod": [
+    1540.0,
+    32
+   ],
+   "hours": [
+    0.0,
+    0
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    98.08,
+    32
+   ],
+   "proj": [
+    337.0,
+    32
+   ],
+   "train": [
+    0.0,
+    0
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    195791.833,
+    32
+   ],
+   "tenure": [
+    3500.0,
+    32
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "hr_dashboard",
+   "department": "IT",
+   "n": 38,
+   "prod": [
+    2141.0,
+    38
+   ],
+   "hours": [
+    0.0,
+    0
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    120.6,
+    38
+   ],
+   "proj": [
+    443.0,
+    38
+   ],
+   "train": [
+    0.0,
+    0
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    254203.833,
+    38
+   ],
+   "tenure": [
+    4958.0,
+    38
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "hr_dashboard",
+   "department": "Marketing",
+   "n": 42,
+   "prod": [
+    1859.0,
+    42
+   ],
+   "hours": [
+    0.0,
+    0
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    119.32,
+    42
+   ],
+   "proj": [
+    493.0,
+    42
+   ],
+   "train": [
+    0.0,
+    0
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    263766.833,
+    42
+   ],
+   "tenure": [
+    4350.0,
+    42
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "hr_dashboard",
+   "department": "Sales",
+   "n": 47,
+   "prod": [
+    2078.0,
+    47
+   ],
+   "hours": [
+    0.0,
+    0
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    138.4,
+    47
+   ],
+   "proj": [
+    513.0,
+    47
+   ],
+   "train": [
+    0.0,
+    0
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    288883.0,
+    47
+   ],
+   "tenure": [
+    5177.0,
+    47
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "productivity",
+   "department": "BI & Analytics",
+   "n": 2,
+   "prod": [
+    173.0,
+    2
+   ],
+   "hours": [
+    81.0,
+    2
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    0.0,
+    0
+   ],
+   "proj": [
+    35.0,
+    2
+   ],
+   "train": [
+    240.0,
+    2
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    13416.667,
+    2
+   ],
+   "tenure": [
+    108.0,
+    2
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "productivity",
+   "department": "Data Analysis",
+   "n": 1,
+   "prod": [
+    76.0,
+    1
+   ],
+   "hours": [
+    40.0,
+    1
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    0.0,
+    0
+   ],
+   "proj": [
+    10.0,
+    1
+   ],
+   "train": [
+    70.0,
+    1
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    5166.667,
+    1
+   ],
+   "tenure": [
+    24.0,
+    1
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "productivity",
+   "department": "Data Engineering",
+   "n": 2,
+   "prod": [
+    172.0,
+    2
+   ],
+   "hours": [
+    87.0,
+    2
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    0.0,
+    0
+   ],
+   "proj": [
+    36.0,
+    2
+   ],
+   "train": [
+    250.0,
+    2
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    14000.0,
+    2
+   ],
+   "tenure": [
+    108.0,
+    2
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "productivity",
+   "department": "Data Science",
+   "n": 3,
+   "prod": [
+    245.0,
+    3
+   ],
+   "hours": [
+    122.0,
+    3
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    0.0,
+    0
+   ],
+   "proj": [
+    43.0,
+    3
+   ],
+   "train": [
+    295.0,
+    3
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    18916.667,
+    3
+   ],
+   "tenure": [
+    120.0,
+    3
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  },
+  {
+   "source": "productivity",
+   "department": "Machine Learning",
+   "n": 2,
+   "prod": [
+    175.0,
+    2
+   ],
+   "hours": [
+    91.0,
+    2
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    0.0,
+    0
+   ],
+   "proj": [
+    40.0,
+    2
+   ],
+   "train": [
+    250.0,
+    2
+   ],
+   "remote": [
+    0.0,
+    0
+   ],
+   "sick": [
+    0.0,
+    0
+   ],
+   "salary": [
+    14666.667,
+    2
+   ],
+   "tenure": [
+    120.0,
+    2
+   ],
+   "sick_high": 0,
+   "resigned": 0
+  }
+ ],
+ "by_year": [
+  {
+   "source": "hr_dashboard",
+   "year": 1997,
+   "n": 1,
+   "prod": [
+    76.0,
+    1
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    4.48,
+    1
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 1998,
+   "n": 4,
+   "prod": [
+    121.0,
+    4
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    16.92,
+    4
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 1999,
+   "n": 2,
+   "prod": [
+    150.0,
+    2
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    3.84,
+    2
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2000,
+   "n": 2,
+   "prod": [
+    146.0,
+    2
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    7.52,
+    2
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2001,
+   "n": 1,
+   "prod": [
+    60.0,
+    1
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    1.72,
+    1
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2002,
+   "n": 6,
+   "prod": [
+    358.0,
+    6
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    19.92,
+    6
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2003,
+   "n": 6,
+   "prod": [
+    284.0,
+    6
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    16.72,
+    6
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2004,
+   "n": 10,
+   "prod": [
+    449.0,
+    10
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    29.8,
+    10
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2005,
+   "n": 6,
+   "prod": [
+    211.0,
+    6
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    15.96,
+    6
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2006,
+   "n": 9,
+   "prod": [
+    398.0,
+    9
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    24.64,
+    9
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2007,
+   "n": 5,
+   "prod": [
+    145.0,
+    5
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    11.96,
+    5
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2008,
+   "n": 6,
+   "prod": [
+    267.0,
+    6
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    19.88,
+    6
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2009,
+   "n": 6,
+   "prod": [
+    307.0,
+    6
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    20.76,
+    6
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2010,
+   "n": 5,
+   "prod": [
+    249.0,
+    5
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    18.08,
+    5
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2011,
+   "n": 3,
+   "prod": [
+    85.0,
+    3
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    11.96,
+    3
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2012,
+   "n": 10,
+   "prod": [
+    547.0,
+    10
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    26.88,
+    10
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2013,
+   "n": 5,
+   "prod": [
+    215.0,
+    5
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    16.56,
+    5
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2014,
+   "n": 3,
+   "prod": [
+    171.0,
+    3
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    7.2,
+    3
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2015,
+   "n": 7,
+   "prod": [
+    360.0,
+    7
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    19.52,
+    7
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2016,
+   "n": 8,
+   "prod": [
+    453.0,
+    8
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    22.96,
+    8
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2017,
+   "n": 23,
+   "prod": [
+    1193.0,
+    23
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    68.36,
+    23
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2018,
+   "n": 20,
+   "prod": [
+    904.0,
+    20
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    58.52,
+    20
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2020,
+   "n": 40,
+   "prod": [
+    1697.0,
+    40
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    119.68,
+    40
+   ]
+  },
+  {
+   "source": "hr_dashboard",
+   "year": 2021,
+   "n": 12,
+   "prod": [
+    505.0,
+    12
+   ],
+   "ot": [
+    0.0,
+    0
+   ],
+   "sat": [
+    35.64,
+    12
+   ]
+  }
+ ],
+ "rows": 210,
+ "labeled_rows": 0,
+ "null_counts": {
+  "education_level": 210,
+  "weekly_hours": 200,
+  "overtime_hours": 210,
+  "training_hours": 200,
+  "satisfaction": 10,
+  "remote_pct": 210,
+  "team_size": 210,
+  "promotions": 210,
+  "sick_days": 210
+ }
+}
